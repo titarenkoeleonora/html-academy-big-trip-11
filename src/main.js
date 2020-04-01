@@ -5,23 +5,27 @@ const POINTS_COUNT = 3;
 const tripMainElement = document.querySelector(`.trip-main`);
 const tripControlsElement = tripMainElement.querySelector(`.trip-controls`);
 const tripControlsTitlesElement = tripControlsElement.querySelectorAll(`h2`);
-const [firstTitle, secondTitle] = tripControlsTitlesElement;
+const [firstTitleElement, secondTitleElement] = tripControlsTitlesElement;
 const siteMainElement = document.querySelector(`.page-main`);
 const tripEventsElement = siteMainElement.querySelector(`.trip-events`);
 
-const createTripRouteTemplate = () => {
+const createTripInfoTemplate = () => `<section class="trip-main__trip-info  trip-info"></section>`;
+
+const createRouteTemplate = () => {
   return (
-    `<section class="trip-main__trip-info  trip-info">
-    <div class="trip-info__main">
+    `<div class="trip-info__main">
       <h1 class="trip-info__title">Amsterdam &mdash; Chamonix &mdash; Geneva</h1>
 
       <p class="trip-info__dates">Mar 18&nbsp;&mdash;&nbsp;20</p>
-    </div>
+    </div>`
+  );
+};
 
-    <p class="trip-info__cost">
+const createCostTemplate = () => {
+  return (
+    `<p class="trip-info__cost">
       Total: &euro;&nbsp;<span class="trip-info__cost-value">1230</span>
-    </p>
-  </section>`
+    </p>`
   );
 };
 
@@ -273,7 +277,7 @@ const createEventEditTemplate = () => {
 
 const createDaysContainerTemplate = () => `<ul class="trip-days"></ul>`;
 
-const createDayTemlate = () => {
+const createDayTemplate = () => {
   return (
     ` <li class="trip-days__item  day">
         <div class="day__info">
@@ -325,24 +329,30 @@ const createRoutePointsTemplate = () => {
   );
 };
 
-const render = (container, template, place) => container.insertAdjacentHTML(place, template);
+const render = (container, template, place = `beforeend`) => container.insertAdjacentHTML(place, template);
 
-render(firstTitle, createTripRouteTemplate(), `afterend`);
-render(secondTitle, createSiteMenuTemplate(), `afterend`);
-render(tripControlsElement, createFiltersTemplate(), `beforeend`);
-render(tripEventsElement, createSortingTemplate(), `beforeend`);
-render(tripEventsElement, createEventEditTemplate(), `beforeend`);
-render(tripEventsElement, createDaysContainerTemplate(), `beforeend`);
+render(tripMainElement, createTripInfoTemplate(), `afterbegin`);
+
+const tripInfoElement = tripMainElement.querySelector(`.trip-info`);
+
+render(tripInfoElement, createRouteTemplate());
+render(tripInfoElement, createCostTemplate());
+
+render(firstTitleElement, createSiteMenuTemplate(), `afterend`);
+render(secondTitleElement, createFiltersTemplate(), `afterend`);
+render(tripEventsElement, createSortingTemplate());
+render(tripEventsElement, createEventEditTemplate());
+render(tripEventsElement, createDaysContainerTemplate());
 
 const daysContainerElement = tripEventsElement.querySelector(`.trip-days`);
 
-render(daysContainerElement, createDayTemlate(), `beforeend`);
+render(daysContainerElement, createDayTemplate());
 
 const dayElement = daysContainerElement.querySelector(`.day`);
 
-render(dayElement, createEventsListTemplate(), `beforeend`);
+render(dayElement, createEventsListTemplate());
 
-const eventsList = dayElement.querySelector(`.trip-events__list`);
+const eventsListElement = dayElement.querySelector(`.trip-events__list`);
 
 const renderRoutePoints = (container, template, place) => {
   for (let i = 0; i < POINTS_COUNT; i++) {
@@ -350,4 +360,4 @@ const renderRoutePoints = (container, template, place) => {
   }
 };
 
-renderRoutePoints(eventsList, createRoutePointsTemplate(), `beforeend`);
+renderRoutePoints(eventsListElement, createRoutePointsTemplate());
