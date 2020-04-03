@@ -1,15 +1,20 @@
 {
-  "name": "BigTrip",
+  "name": "bigtrip",
   "version": "1.0.0",
   "private": true,
   "description": "Личный проект «Большое путешествие» от HTML Academy",
   "scripts": {
+    "build": "webpack",
     "eslint": "eslint src/**/*.js",
+    "start": "webpack-dev-server --open",
     "test": "npm run eslint"
   },
   "devDependencies": {
     "eslint": "6.1.0",
-    "eslint-config-htmlacademy": "0.5.2"
+    "eslint-config-htmlacademy": "0.5.2",
+    "webpack": "4.42.1",
+    "webpack-cli": "3.3.11",
+    "webpack-dev-server": "3.10.3"
   },
   "engines": {
     "node": "10"
