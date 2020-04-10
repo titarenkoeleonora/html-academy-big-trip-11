@@ -101,7 +101,7 @@ const getRandomPictures = () => {
   return photosArray;
 };
 
-const generateTripPoint = () => {
+export const tripPoint = () => {
   return {
     type: getRandomArrayItem(TRIP_POINT_TYPES),
     dateFrom: `${getRandomDate()} ${formatTime()}`,
