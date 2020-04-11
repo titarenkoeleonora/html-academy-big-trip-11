@@ -9,9 +9,10 @@ import {createSiteMenuTemplate} from "./components/site-menu.js";
 import {createSortingTemplate} from "./components/sotring.js";
 import {createDaysContainerTemplate} from "./components/trip-days.js";
 import {createTripInfoTemplate} from "./components/trip-info.js";
-import {tripPoint} from "./components/mock/route-point.js";
+import {generateTripPoints} from "./components/mock/route-point.js";
+import {getRandomArrayItem, getRandomInteger} from "./utils.js";
 
-const POINTS_COUNT = 3;
+const POINTS_COUNT = 20;
 
 const tripMainElement = document.querySelector(`.trip-main`);
 const tripControlsElement = tripMainElement.querySelector(`.trip-controls`);
@@ -19,6 +20,8 @@ const tripControlsTitlesElement = tripControlsElement.querySelectorAll(`h2`);
 const [firstTitleElement, secondTitleElement] = tripControlsTitlesElement;
 const siteMainElement = document.querySelector(`.page-main`);
 const tripEventsElement = siteMainElement.querySelector(`.trip-events`);
+
+const tripPoint = generateTripPoints(POINTS_COUNT);
 
 const render = (container, template, place = `beforeend`) => container.insertAdjacentHTML(place, template);
 
@@ -29,10 +32,11 @@ const tripInfoElement = tripMainElement.querySelector(`.trip-info`);
 render(tripInfoElement, createRouteTemplate());
 render(tripInfoElement, createCostTemplate());
 
+
 render(firstTitleElement, createSiteMenuTemplate(), `afterend`);
 render(secondTitleElement, createFiltersTemplate(), `afterend`);
 render(tripEventsElement, createSortingTemplate());
-render(tripEventsElement, createEventEditTemplate());
+render(tripEventsElement, createEventEditTemplate(tripPoint[0]));
 render(tripEventsElement, createDaysContainerTemplate());
 
 const daysContainerElement = tripEventsElement.querySelector(`.trip-days`);
@@ -45,10 +49,11 @@ render(dayElement, createEventsListTemplate());
 
 const eventsListElement = dayElement.querySelector(`.trip-events__list`);
 
-const renderRoutePoints = (container, template, place) => {
+const renderRoutePoints = () => {
   for (let i = 0; i < POINTS_COUNT; i++) {
-    render(container, template, place);
+    render(eventsListElement, createRoutePointsTemplate(tripPoint[i]));
   }
 };
 
-renderRoutePoints(eventsListElement, createRoutePointsTemplate(tripPoint()));
+renderRoutePoints();
+
