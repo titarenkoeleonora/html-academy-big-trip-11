@@ -10,7 +10,6 @@ import {createSortingTemplate} from "./components/sotring.js";
 import {createDaysContainerTemplate} from "./components/trip-days.js";
 import {createTripInfoTemplate} from "./components/trip-info.js";
 import {generateTripPoints} from "./components/mock/route-point.js";
-import {getRandomArrayItem, getRandomInteger} from "./utils.js";
 
 const POINTS_COUNT = 20;
 
@@ -50,10 +49,9 @@ render(dayElement, createEventsListTemplate());
 const eventsListElement = dayElement.querySelector(`.trip-events__list`);
 
 const renderRoutePoints = () => {
-  for (let i = 0; i < POINTS_COUNT; i++) {
+  for (let i = 1; i < POINTS_COUNT; i++) {
     render(eventsListElement, createRoutePointsTemplate(tripPoint[i]));
   }
 };
 
 renderRoutePoints();
-

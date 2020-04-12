@@ -1,32 +1,5 @@
-import {TRIP_POINT_TYPES, CITIES} from "../constants";
+import {CITIES, TripDescriptions, typeRoutePointMap} from "../constants";
 import {getRandomArrayItem, getRandomInteger, getRandomDate} from "../../utils";
-
-const TripDescriptions = [
-  `Lorem ipsum dolor sit amet, consectetur adipiscing elit.`,
-  `Cras aliquet varius magna, non porta ligula feugiat eget.`,
-  `Fusce tristique felis at fermentum pharetra.`,
-  `Aliquam id orci ut lectus varius viverra.`,
-  `Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante.`,
-  `Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum.`,
-  `Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui.`,
-  `Sed sed nisi sed augue convallis suscipit in sed felis.`,
-  `Aliquam erat volutpat.`,
-  `Nunc fermentum tortor ac porta dapibus.`,
-  `In rutrum ac purus sit amet tempus.`,
-];
-
-// const typeRoutePointMap = {
-//   'Taxi': `to`,
-//   'Bus': `to`,
-//   'Train': `to`,
-//   'Ship': `to`,
-//   'Transport': `to`,
-//   'Drive': `to`,
-//   'Flight': `to`,
-//   'Check': `in`,
-//   'Sightseeing': `in`,
-//   'Restaurant': `in`,
-// };
 
 const tripOffers = [{
   title: `Upgrade to a business class`,
@@ -68,19 +41,22 @@ const picturesCount = {
 };
 
 const priceSize = {
-  MIN: 10,
-  MAX: 150,
+  MIN: 100,
+  MAX: 1000,
 };
+
+const offersCount = {
+  MIN: 0,
+  MAX: 5,
+};
+
+export const getRandomTripType = () => getRandomArrayItem(Object.keys(typeRoutePointMap));
 
 // Генерирует случайное описание фото
 
-// Shuffle array
 const shuffledDescriptions = TripDescriptions.sort(() => 0.5 - Math.random());
 
-// Get sub-array of first n elements after shuffled
 let selectedDescriptions = shuffledDescriptions.slice(0, getRandomInteger(descriptionsCount.MIN, descriptionsCount.MAX)).join(` `);
-
-// Генерирует случайные фото
 
 const getRandomPictures = () => {
   const photosArray = [];
@@ -94,7 +70,7 @@ const getRandomPictures = () => {
 
 const getRandomOffers = () => {
   const offersArray = [];
-  const count = getRandomInteger(0, 3);
+  const count = getRandomInteger(offersCount.MIN, offersCount.MAX);
   for (let i = 0; i < count; i++) {
     offersArray.push(getRandomArrayItem(tripOffers));
   }
@@ -102,9 +78,8 @@ const getRandomOffers = () => {
 };
 
 const getTripPoint = () => {
-  const isOfferAdded = Math.random() > 0.5 ? null : getRandomOffers();
   return {
-    type: getRandomArrayItem(TRIP_POINT_TYPES),
+    type: getRandomTripType(),
     dateFrom: getRandomDate(),
     dateTo: getRandomDate(),
     destination: {
@@ -123,6 +98,3 @@ export const generateTripPoints = (count) => {
     .fill(``)
     .map(getTripPoint);
 };
-
-console.log(generateTripPoints());
-

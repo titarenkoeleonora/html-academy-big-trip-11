@@ -5,7 +5,6 @@ export const getRandomArrayItem = (array) => {
 };
 
 export const getRandomInteger = (min, max) => {
-  // случайное число от min до (max+1)
   let rand = min + Math.random() * (max + 1 - min);
   return Math.floor(rand);
 };
@@ -21,8 +20,6 @@ export const formatTime = (date) => {
   return `${hours}:${minutes}`;
 };
 
-// Генерирует случайные дату и время
-
 export const getRandomDate = () => {
   const targetDate = new Date();
   const sign = Math.random() > 0.5 ? 1 : -1;
@@ -34,10 +31,9 @@ export const getRandomDate = () => {
 };
 
 export const formatDate = (date) => {
-  const dd = date.getDate();
-  const mm = date.getMonth() + 1;
+  const dd = (`0` + date.getDate()).slice(-2);
+  const mm = (`0` + (date.getMonth() + 1)).slice(-2);
   const yy = date.getFullYear() % 100;
 
   return `${dd}/${mm}/${yy}`;
 };
-

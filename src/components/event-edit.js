@@ -1,5 +1,11 @@
-import {TRIP_POINT_TYPES, TRIP_POINT_TYPES_IN} from "./constants";
+import {CITIES, typeRoutePointMap} from "./constants";
 import {formatDate, formatTime} from "../utils";
+
+const createOptionsMarkup = (cities) => cities.map((city) => {
+  return (
+    `<option value="${city}"></option>`
+  );
+}).join(`\n`);
 
 const createTypeMarkup = (types) => types.map((type) => {
   return (
@@ -16,12 +22,31 @@ const createPhotosMarkup = (photos) => photos.map((photo) => {
   );
 }).join(`\n`);
 
-export const createEventEditTemplate = (tripPoint) => {
-  const {type, dateFrom, dateTo, destination} = tripPoint;
+const createOfferMarkup = (offers) => offers.map((offer) => {
+  const isChecked = Math.random() > 0.5;
+  return (
+    `<div class="event__offer-selector">
+    <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-1" type="checkbox" name="event-offer-luggage" ${isChecked ? `checked` : ``}>
+    <label class="event__offer-label" for="event-offer-luggage-1">
+      <span class="event__offer-title">${offer.title}</span>
+      &plus;
+      &euro;&nbsp;<span class="event__offer-price">${offer.price}</span>
+    </label>
+  </div>`
+  );
+}).join(`\n`);
 
-  const typeTransferMarkup = createTypeMarkup(TRIP_POINT_TYPES);
-  const typeActivityMarkup = createTypeMarkup(TRIP_POINT_TYPES_IN);
+export const createEventEditTemplate = (tripPoint) => {
+  const {type, dateFrom, dateTo, destination, offers} = tripPoint;
+
+  const tripPointTypesTo = (Object.keys(typeRoutePointMap).slice(0, 7));
+  const tripPointTypesIn = (Object.keys(typeRoutePointMap).slice(7, 10));
+
+  const typeTransferMarkup = createTypeMarkup(tripPointTypesTo);
+  const typeActivityMarkup = createTypeMarkup(tripPointTypesIn);
   const photosMarkup = createPhotosMarkup(destination.pictures);
+  const offersMarkup = createOfferMarkup(offers, Math.random() > 0.5);
+  const optionMarkup = createOptionsMarkup(CITIES);
 
   return (
     `<form class="trip-events__item  event  event--edit" action="#" method="post">
@@ -48,14 +73,11 @@ export const createEventEditTemplate = (tripPoint) => {
 
       <div class="event__field-group  event__field-group--destination">
         <label class="event__label  event__type-output" for="event-destination-1">
-        ${type} to
+        ${type} ${typeRoutePointMap[type]}
         </label>
         <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination.name}" list="destination-list-1">
         <datalist id="destination-list-1">
-          <option value="Amsterdam"></option>
-          <option value="Geneva"></option>
-          <option value="Chamonix"></option>
-          <option value="Saint Petersburg"></option>
+        ${optionMarkup}
         </datalist>
       </div>
 
@@ -87,50 +109,8 @@ export const createEventEditTemplate = (tripPoint) => {
         <h3 class="event__section-title  event__section-title--offers">Offers</h3>
 
         <div class="event__available-offers">
-          <div class="event__offer-selector">
-            <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-1" type="checkbox" name="event-offer-luggage" checked>
-            <label class="event__offer-label" for="event-offer-luggage-1">
-              <span class="event__offer-title">Add luggage</span>
-              &plus;
-              &euro;&nbsp;<span class="event__offer-price">30</span>
-            </label>
-          </div>
+          ${offersMarkup}
 
-          <div class="event__offer-selector">
-            <input class="event__offer-checkbox  visually-hidden" id="event-offer-comfort-1" type="checkbox" name="event-offer-comfort" checked>
-            <label class="event__offer-label" for="event-offer-comfort-1">
-              <span class="event__offer-title">Switch to comfort class</span>
-              &plus;
-              &euro;&nbsp;<span class="event__offer-price">100</span>
-            </label>
-          </div>
-
-          <div class="event__offer-selector">
-            <input class="event__offer-checkbox  visually-hidden" id="event-offer-meal-1" type="checkbox" name="event-offer-meal">
-            <label class="event__offer-label" for="event-offer-meal-1">
-              <span class="event__offer-title">Add meal</span>
-              &plus;
-              &euro;&nbsp;<span class="event__offer-price">15</span>
-            </label>
-          </div>
-
-          <div class="event__offer-selector">
-            <input class="event__offer-checkbox  visually-hidden" id="event-offer-seats-1" type="checkbox" name="event-offer-seats">
-            <label class="event__offer-label" for="event-offer-seats-1">
-              <span class="event__offer-title">Choose seats</span>
-              &plus;
-              &euro;&nbsp;<span class="event__offer-price">5</span>
-            </label>
-          </div>
-
-          <div class="event__offer-selector">
-            <input class="event__offer-checkbox  visually-hidden" id="event-offer-train-1" type="checkbox" name="event-offer-train">
-            <label class="event__offer-label" for="event-offer-train-1">
-              <span class="event__offer-title">Travel by train</span>
-              &plus;
-              &euro;&nbsp;<span class="event__offer-price">40</span>
-            </label>
-          </div>
         </div>
       </section>
 
@@ -150,3 +130,4 @@ export const createEventEditTemplate = (tripPoint) => {
   </form>`
   );
 };
+
