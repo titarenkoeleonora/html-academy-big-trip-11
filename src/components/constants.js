@@ -1,5 +1,10 @@
 export const CITIES = [`Amsterdam`, `New-York`, `Geneva`, `Moscow`, `Paris`, `Saint Petersburg`, `Frankfurt`, `Mainz`, `Abu-Dhabi`, `Dubai`];
 
+export const HOURS_IN_MS_COEFFICIENT = 3600000; // 60мин × 60сек × 1000мс
+export const MINUTES_IN_DAY = 1440;
+export const HOURS_IN_DAY = 24;
+export const MINUTES_IN_HOUR = 60;
+
 export const TripDescriptions = [
   `Lorem ipsum dolor sit amet, consectetur adipiscing elit.`,
   `Cras aliquet varius magna, non porta ligula feugiat eget.`,

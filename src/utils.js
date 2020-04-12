@@ -26,6 +26,8 @@ export const getRandomDate = () => {
   const diffValue = sign * getRandomInteger(1, 10);
 
   targetDate.setDate(targetDate.getDate() + diffValue);
+  targetDate.setHours(targetDate.getHours() + diffValue);
+  targetDate.setMinutes(targetDate.getMinutes() + diffValue);
 
   return targetDate;
 };

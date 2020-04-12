@@ -1,5 +1,6 @@
 import {formatTime} from "../utils";
 import {typeRoutePointMap} from "./constants";
+import {getTimeDifference} from "./date-generation";
 
 const createOffersMarkup = (offers) => offers.map((offer) => {
   return (
@@ -29,7 +30,7 @@ export const createRoutePointsTemplate = (tripPoint) => {
             &mdash;
             <time class="event__end-time" datetime="${dateTo}">${formatTime(dateTo)}</time>
           </p>
-          <p class="event__duration">30M</p>
+          <p class="event__duration">${getTimeDifference(dateFrom, dateTo)}</p>
         </div>
 
         <p class="event__price">
