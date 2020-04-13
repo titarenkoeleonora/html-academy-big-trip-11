@@ -1,11 +1,18 @@
-import {getRandomDate, getRandomInteger} from "../utils";
+import {getRandomInteger} from "../utils";
 import {HOURS_IN_MS_COEFFICIENT, MINUTES_IN_DAY, HOURS_IN_DAY, MINUTES_IN_HOUR} from "./constants";
 
 export const getRandomMillisecondsCount = () => (getRandomInteger(10, MINUTES_IN_HOUR) * getRandomInteger(1, 5)) * getRandomInteger(1, 10);
 
 const сonvertToMinutes = (timeInMilliseconds) => Math.floor(timeInMilliseconds * HOURS_IN_MS_COEFFICIENT) / MINUTES_IN_HOUR;
 
-export const startDate = getRandomDate();
+export const startDate = () => {
+  const day = getRandomInteger(1, 30);
+  const hour = getRandomInteger(0, 23);
+  const minute = getRandomInteger(0, 59);
+
+  return new Date(new Date().getFullYear(), new Date().getMonth(), day, hour, minute);
+};
+
 export const endDate = (date) => {
   const randomMillisecondsCount = getRandomMillisecondsCount();
   return new Date(Date.parse(date) + Math.floor(сonvertToMinutes(randomMillisecondsCount)));
@@ -32,5 +39,3 @@ export const getTimeDifference = (start, end) => {
   }
   return difference;
 };
-
-getTimeDifference(startDate, endDate(startDate));

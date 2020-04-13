@@ -55,3 +55,5 @@ const renderRoutePoints = () => {
 };
 
 renderRoutePoints();
+
+// console.log(tripPoint.sort((a, b) => a.dateFrom > b.dateFrom ? 1 : -1));

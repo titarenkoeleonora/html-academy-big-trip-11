@@ -92,11 +92,14 @@ const getRandomOffers = () => {
   return offersArray;
 };
 
-const getTripPoint = () => {
+export const getTripPoint = () => {
+  const start = startDate();
+  const end = endDate(start);
+
   return {
     type: getRandomTripType(),
-    dateFrom: startDate,
-    dateTo: endDate(startDate),
+    dateFrom: start,
+    dateTo: end,
     destination: {
       name: getRandomArrayItem(CITIES),
       description: selectedDescriptions,
@@ -113,3 +116,4 @@ export const generateTripPoints = (count) => {
     .fill(``)
     .map(getTripPoint);
 };
+
