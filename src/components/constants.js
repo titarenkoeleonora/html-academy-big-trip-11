@@ -5,6 +5,8 @@ export const MINUTES_IN_DAY = 1440;
 export const HOURS_IN_DAY = 24;
 export const MINUTES_IN_HOUR = 60;
 
+export const MONTHS = [`JAN`, `FEB`, `MAR`, `APR`, `MAY`, `JUN`, `JUL`, `AUG`, `SEP`, `OCT`, `NOV`, `DEC`];
+
 export const TripDescriptions = [
   `Lorem ipsum dolor sit amet, consectetur adipiscing elit.`,
   `Cras aliquet varius magna, non porta ligula feugiat eget.`,

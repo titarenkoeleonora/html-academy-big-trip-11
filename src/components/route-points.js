@@ -2,7 +2,7 @@ import {formatTime} from "../utils";
 import {typeRoutePointMap} from "./constants";
 import {getTimeDifference} from "./date-generation";
 
-const createOffersMarkup = (offers) => offers.map((offer) => {
+const createOffersMarkup = (offers) => offers.slice(0, 3).map((offer) => {
   return (
     `<li class="event__offer">
     <span class="event__offer-title">${offer.title}</span>

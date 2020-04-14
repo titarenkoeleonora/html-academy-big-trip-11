@@ -39,3 +39,5 @@ export const formatDate = (date) => {
 
   return `${dd}/${mm}/${yy}`;
 };
+
+export const render = (container, template, place = `beforeend`) => container.insertAdjacentHTML(place, template);
