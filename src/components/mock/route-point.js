@@ -1,6 +1,6 @@
 import {CITIES, typeRoutePointMap} from "../constants";
 import {getRandomArrayItem, getRandomInteger} from "../../utils";
-import {startDate, endDate} from "../date-generation";
+import {getStartDate, getEndDate} from "../date-generation";
 
 const TripDescriptions = [
   `Lorem ipsum dolor sit amet, consectetur adipiscing elit.`,
@@ -93,8 +93,8 @@ const getRandomOffers = () => {
 };
 
 export const getTripPoint = () => {
-  const start = startDate();
-  const end = endDate(start);
+  const start = getStartDate();
+  const end = getEndDate(start);
 
   return {
     type: getRandomTripType(),

@@ -1,16 +1,17 @@
 import {getRandomInteger, getRandomDate} from "../utils";
 import {HOURS_IN_MS_COEFFICIENT, MINUTES_IN_DAY, HOURS_IN_DAY, MINUTES_IN_HOUR} from "./constants";
 
+const MIN_INTEGER = 0;
 const MAX_COUNT_DAYS_DIFFERENCE = 1;
 
-export const startDate = () => getRandomDate();
+export const getStartDate = () => getRandomDate();
 
-export const endDate = (date) => {
+export const getEndDate = (date) => {
   const targetDate = new Date(date);
 
-  targetDate.setDate(targetDate.getDate() + getRandomInteger(0, MAX_COUNT_DAYS_DIFFERENCE));
-  targetDate.setHours(targetDate.getHours() + getRandomInteger(0, HOURS_IN_DAY));
-  targetDate.setMinutes(targetDate.getMinutes() + getRandomInteger(0, MINUTES_IN_HOUR));
+  targetDate.setDate(targetDate.getDate() + getRandomInteger(MIN_INTEGER, MAX_COUNT_DAYS_DIFFERENCE));
+  targetDate.setHours(targetDate.getHours() + getRandomInteger(MIN_INTEGER, HOURS_IN_DAY));
+  targetDate.setMinutes(targetDate.getMinutes() + getRandomInteger(MIN_INTEGER, MINUTES_IN_HOUR));
   return targetDate;
 };
 

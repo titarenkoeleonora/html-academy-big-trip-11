@@ -7,6 +7,12 @@ export const MINUTES_IN_HOUR = 60;
 
 export const MONTHS = [`JAN`, `FEB`, `MAR`, `APR`, `MAY`, `JUN`, `JUL`, `AUG`, `SEP`, `OCT`, `NOV`, `DEC`];
 
+export const MAX_SHOWED_OFFERS_COUNT = 3;
+
+export const MIN_ACTIONS_INDEX = 0;
+export const MAX_ACTIONS_INDEX = 7;
+export const MAX_ACTIVITY_INDEX = 10;
+
 export const TripDescriptions = [
   `Lorem ipsum dolor sit amet, consectetur adipiscing elit.`,
   `Cras aliquet varius magna, non porta ligula feugiat eget.`,
