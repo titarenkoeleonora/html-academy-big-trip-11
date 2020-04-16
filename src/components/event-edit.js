@@ -1,4 +1,4 @@
-import {CITIES, typeRoutePointMap, MIN_ACTIONS_INDEX, MAX_ACTIONS_INDEX, MAX_ACTIVITY_INDEX} from "./constants";
+import {CITIES, typeRoutePointMap, TypeRoutePointIndex} from "./constants";
 import {formatDate, formatTime} from "../utils";
 
 const createOptionsMarkup = (cities) => cities.map((city) => {
@@ -39,8 +39,8 @@ const createOfferMarkup = (offers) => offers.map((offer) => {
 export const createEventEditTemplate = (tripPoint) => {
   const {type, dateFrom, dateTo, destination, offers} = tripPoint;
 
-  const tripPointTypesTo = (Object.keys(typeRoutePointMap).slice(MIN_ACTIONS_INDEX, MAX_ACTIONS_INDEX));
-  const tripPointTypesIn = (Object.keys(typeRoutePointMap).slice(MAX_ACTIONS_INDEX, MAX_ACTIVITY_INDEX));
+  const tripPointTypesTo = (Object.keys(typeRoutePointMap).slice(TypeRoutePointIndex.MIN_ACTIONS_INDEX, TypeRoutePointIndex.MAX_ACTIONS_INDEX));
+  const tripPointTypesIn = (Object.keys(typeRoutePointMap).slice(TypeRoutePointIndex.MAX_ACTIONS_INDEX, TypeRoutePointIndex.MAX_ACTIVITY_INDEX));
 
   const typeTransferMarkup = createTypeMarkup(tripPointTypesTo);
   const typeActivityMarkup = createTypeMarkup(tripPointTypesIn);

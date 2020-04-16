@@ -1,7 +1,6 @@
 import {getRandomInteger, getRandomDate} from "../utils";
-import {HOURS_IN_MS_COEFFICIENT, MINUTES_IN_DAY, HOURS_IN_DAY, MINUTES_IN_HOUR} from "./constants";
+import {Time} from "./constants";
 
-const MIN_INTEGER = 0;
 const MAX_COUNT_DAYS_DIFFERENCE = 1;
 
 export const getStartDate = () => getRandomDate();
@@ -9,34 +8,34 @@ export const getStartDate = () => getRandomDate();
 export const getEndDate = (date) => {
   const targetDate = new Date(date);
 
-  targetDate.setDate(targetDate.getDate() + getRandomInteger(MIN_INTEGER, MAX_COUNT_DAYS_DIFFERENCE));
-  targetDate.setHours(targetDate.getHours() + getRandomInteger(MIN_INTEGER, HOURS_IN_DAY));
-  targetDate.setMinutes(targetDate.getMinutes() + getRandomInteger(MIN_INTEGER, MINUTES_IN_HOUR));
+  targetDate.setDate(targetDate.getDate() + getRandomInteger(MAX_COUNT_DAYS_DIFFERENCE));
+  targetDate.setHours(targetDate.getHours() + getRandomInteger(Time.HOURS_IN_DAY));
+  targetDate.setMinutes(targetDate.getMinutes() + getRandomInteger(Time.MINUTES_IN_HOUR));
   return targetDate;
 };
 
 export const getTimeDifference = (start, end) => {
-  const randomDifferenceMinutes = ((end - start) / HOURS_IN_MS_COEFFICIENT) * MINUTES_IN_HOUR;
-  const days = Math.floor((randomDifferenceMinutes / MINUTES_IN_HOUR) / HOURS_IN_DAY);
-  const hours = (days * HOURS_IN_DAY) - HOURS_IN_DAY;
+  const randomDifferenceMinutes = ((end - start) / Time.HOURS_IN_MS_COEFFICIENT) * Time.MINUTES_IN_HOUR;
+  const days = Math.floor((randomDifferenceMinutes / Time.MINUTES_IN_HOUR) / Time.HOURS_IN_DAY);
+  const hours = (days * Time.HOURS_IN_DAY) - Time.HOURS_IN_DAY;
   let difference = null;
 
-  if (randomDifferenceMinutes >= MINUTES_IN_DAY) {
+  if (randomDifferenceMinutes >= Time.MINUTES_IN_DAY) {
     if (hours > 0) {
-      difference = `${days + `D`} ${hours + `H`} ${Math.floor(randomDifferenceMinutes % MINUTES_IN_HOUR) + `M`}`;
+      difference = `${days + `D`} ${hours + `H`} ${Math.floor(randomDifferenceMinutes % Time.MINUTES_IN_HOUR) + `M`}`;
       return difference;
     } else {
-      difference = `${days + `D`} ${Math.floor(randomDifferenceMinutes % MINUTES_IN_HOUR) + `M`}`;
+      difference = `${days + `D`} ${Math.floor(randomDifferenceMinutes % Time.MINUTES_IN_HOUR) + `M`}`;
       return difference;
     }
-  } else if (randomDifferenceMinutes <= MINUTES_IN_HOUR) {
+  } else if (randomDifferenceMinutes <= Time.MINUTES_IN_HOUR) {
     difference = Math.floor(randomDifferenceMinutes) + `M`;
     return difference;
-  } else if (randomDifferenceMinutes <= MINUTES_IN_DAY) {
-    difference = `${Math.floor(randomDifferenceMinutes / MINUTES_IN_HOUR) + `H`} ${Math.floor(randomDifferenceMinutes % MINUTES_IN_HOUR) + `M`}`;
+  } else if (randomDifferenceMinutes <= Time.MINUTES_IN_DAY) {
+    difference = `${Math.floor(randomDifferenceMinutes / Time.MINUTES_IN_HOUR) + `H`} ${Math.floor(randomDifferenceMinutes % Time.MINUTES_IN_HOUR) + `M`}`;
     return difference;
-  } else if (randomDifferenceMinutes % MINUTES_IN_HOUR === 0) {
-    difference = Math.floor(randomDifferenceMinutes) / MINUTES_IN_HOUR + `H`;
+  } else if (randomDifferenceMinutes % Time.MINUTES_IN_HOUR === 0) {
+    difference = Math.floor(randomDifferenceMinutes) / Time.MINUTES_IN_HOUR + `H`;
     return difference;
   }
   return difference;

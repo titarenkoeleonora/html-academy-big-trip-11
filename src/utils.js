@@ -1,12 +1,12 @@
-export const getRandomArrayItem = (array) => {
-  const randomIndex = getRandomInteger(0, array.length - 1);
-
-  return array[randomIndex];
-};
-
-export const getRandomInteger = (min, max) => {
+export const getRandomInteger = (max, min = 0) => {
   let rand = min + Math.random() * (max + 1 - min);
   return Math.floor(rand);
+};
+
+export const getRandomArrayItem = (array) => {
+  const randomIndex = getRandomInteger(array.length - 1);
+
+  return array[randomIndex];
 };
 
 const castTimeFormat = (value) => {
@@ -23,7 +23,7 @@ export const formatTime = (date) => {
 export const getRandomDate = () => {
   const targetDate = new Date();
   const sign = Math.random() > 0.5 ? 1 : -1;
-  const diffValue = sign * getRandomInteger(1, 10);
+  const diffValue = sign * getRandomInteger(10, 1);
 
   targetDate.setDate(targetDate.getDate() + diffValue);
   targetDate.setHours(targetDate.getHours() + diffValue);

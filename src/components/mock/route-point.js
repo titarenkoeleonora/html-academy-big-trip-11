@@ -71,11 +71,11 @@ export const getRandomTripType = () => getRandomArrayItem(Object.keys(typeRouteP
 
 const shuffledDescriptions = TripDescriptions.sort(() => 0.5 - Math.random());
 
-let selectedDescriptions = shuffledDescriptions.slice(0, getRandomInteger(descriptionsCount.MIN, descriptionsCount.MAX)).join(` `);
+let selectedDescriptions = shuffledDescriptions.slice(0, getRandomInteger(descriptionsCount.MAX, descriptionsCount.MIN)).join(` `);
 
 const getRandomPictures = () => {
   const photosArray = [];
-  const count = getRandomInteger(picturesCount.MIN, picturesCount.MAX);
+  const count = getRandomInteger(picturesCount.MAX, picturesCount.MIN);
 
   for (let i = 0; i < count; i++) {
     photosArray.push(`http://picsum.photos/248/152?r=${Math.random()}`);
@@ -85,7 +85,7 @@ const getRandomPictures = () => {
 
 const getRandomOffers = () => {
   const offersArray = [];
-  const count = getRandomInteger(offersCount.MIN, offersCount.MAX);
+  const count = getRandomInteger(offersCount.MAX);
   for (let i = 0; i < count; i++) {
     offersArray.push(getRandomArrayItem(tripOffers));
   }
@@ -105,7 +105,7 @@ export const getTripPoint = () => {
       description: selectedDescriptions,
       pictures: getRandomPictures(),
     },
-    basePrice: getRandomInteger(priceSize.MIN, priceSize.MAX),
+    basePrice: getRandomInteger(priceSize.MAX, priceSize.MIN),
     isFavorite: Math.random() > 0.5,
     offers: getRandomOffers(),
   };

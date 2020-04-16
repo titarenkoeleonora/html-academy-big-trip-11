@@ -1,17 +1,21 @@
 export const CITIES = [`Amsterdam`, `New-York`, `Geneva`, `Moscow`, `Paris`, `Saint Petersburg`, `Frankfurt`, `Mainz`, `Abu-Dhabi`, `Dubai`];
 
-export const HOURS_IN_MS_COEFFICIENT = 3600000; // 60мин × 60сек × 1000мс
-export const MINUTES_IN_DAY = 1440;
-export const HOURS_IN_DAY = 24;
-export const MINUTES_IN_HOUR = 60;
+export const Time = {
+  HOURS_IN_MS_COEFFICIENT: 3600000,
+  MINUTES_IN_DAY: 1440,
+  HOURS_IN_DAY: 24,
+  MINUTES_IN_HOUR: 60,
+};
 
 export const MONTHS = [`JAN`, `FEB`, `MAR`, `APR`, `MAY`, `JUN`, `JUL`, `AUG`, `SEP`, `OCT`, `NOV`, `DEC`];
 
 export const MAX_SHOWED_OFFERS_COUNT = 3;
 
-export const MIN_ACTIONS_INDEX = 0;
-export const MAX_ACTIONS_INDEX = 7;
-export const MAX_ACTIVITY_INDEX = 10;
+export const TypeRoutePointIndex = {
+  MIN_ACTIONS_INDEX: 0,
+  MAX_ACTIONS_INDEX: 7,
+  MAX_ACTIVITY_INDEX: 10,
+};
 
 export const TripDescriptions = [
   `Lorem ipsum dolor sit amet, consectetur adipiscing elit.`,
