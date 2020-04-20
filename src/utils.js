@@ -1,4 +1,4 @@
-import {RenderPosition} from "../../1120597-taskmanager-11/src/components/constants";
+import {RenderPosition} from "./components/constants";
 
 export const getRandomInteger = (max, min = 0) => {
   let rand = min + Math.random() * (max + 1 - min);

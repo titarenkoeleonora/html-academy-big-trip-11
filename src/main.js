@@ -56,11 +56,8 @@ render(tripMainElement, tripInfoElement.getElement(), RenderPosition.AFTERBEGIN)
 render(tripInfoElement.getElement(), new RouteComponent().getElement());
 render(tripInfoElement.getElement(), new CostComponent().getElement());
 
-// !!!!!!!!!!!!!!!!
-render(firstTitleElement, new SiteMenuComponent().getElement(), RenderPosition.AFTEREND); // Эти два элемента ни в какую не хотят отрисовываться afterend
-render(secondTitleElement, new FiltersComponent().getElement(), RenderPosition.AFTEREND); // сто раз перепроверила функцию отрисовки, правильность именования константы
-// через консоль вывела каждый элемент и заголовок, и никак( а beforeend рендерятся...
-// !!!!!!!!!!!!!!!!
+render(firstTitleElement, new SiteMenuComponent().getElement(), RenderPosition.AFTEREND);
+render(secondTitleElement, new FiltersComponent().getElement(), RenderPosition.AFTEREND);
 
 render(tripEventsElement, new SortComponent().getElement());
 
