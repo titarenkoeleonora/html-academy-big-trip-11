@@ -1,3 +1,5 @@
+import {RenderPosition} from "../../1120597-taskmanager-11/src/components/constants";
+
 export const getRandomInteger = (max, min = 0) => {
   let rand = min + Math.random() * (max + 1 - min);
   return Math.floor(rand);
@@ -40,4 +42,23 @@ export const formatDate = (date) => {
   return `${dd}/${mm}/${yy}`;
 };
 
-export const render = (container, template, place = `beforeend`) => container.insertAdjacentHTML(place, template);
+export const createElement = (template) => {
+  const newElement = document.createElement(`div`);
+  newElement.innerHTML = template;
+
+  return newElement.firstChild;
+};
+
+export const render = (container, element, place = RenderPosition.BEFOREEND) => {
+  switch (place) {
+    case RenderPosition.AFTERBEGIN:
+      container.prepend(element);
+      break;
+    case RenderPosition.BEFOREEND:
+      container.append(element);
+      break;
+    case RenderPosition.AFTEREND:
+      container.after(element);
+      break;
+  }
+};

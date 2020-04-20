@@ -1,5 +1,5 @@
 import {CITIES, typeRoutePointMap, TypeRoutePointIndex} from "./constants";
-import {formatDate, formatTime} from "../utils";
+import {formatDate, formatTime, createElement} from "../utils";
 
 const createOptionsMarkup = (cities) => cities.map((city) => {
   return (
@@ -36,7 +36,7 @@ const createOfferMarkup = (offers) => offers.map((offer) => {
   );
 }).join(`\n`);
 
-export const createEventEditTemplate = (tripPoint) => {
+const createEventEditTemplate = (tripPoint) => {
   const {type, dateFrom, dateTo, destination, offers} = tripPoint;
 
   const tripPointTypesTo = (Object.keys(typeRoutePointMap).slice(TypeRoutePointIndex.MIN_ACTIONS_INDEX, TypeRoutePointIndex.MAX_ACTIONS_INDEX));
@@ -131,3 +131,24 @@ export const createEventEditTemplate = (tripPoint) => {
   );
 };
 
+export default class EventEditComponent {
+  constructor(eventEdit) {
+    this._eventEdit = eventEdit;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createEventEditTemplate(this._eventEdit);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

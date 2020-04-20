@@ -1,4 +1,4 @@
-import {formatTime} from "../utils";
+import {formatTime, createElement} from "../utils";
 import {typeRoutePointMap, MAX_SHOWED_OFFERS_COUNT} from "./constants";
 import {getTimeDifference} from "./date-generation";
 
@@ -12,7 +12,7 @@ const createOffersMarkup = (offers) => offers.slice(0, MAX_SHOWED_OFFERS_COUNT).
   );
 }).join(`\n`);
 
-export const createRoutePointsTemplate = (tripPoint) => {
+const createRoutePointsTemplate = (tripPoint) => {
   const {type, dateFrom, dateTo, destination, basePrice, offers} = tripPoint;
 
   const offersMarkup = createOffersMarkup(offers);
@@ -49,3 +49,25 @@ export const createRoutePointsTemplate = (tripPoint) => {
     </li>`
   );
 };
+
+export default class RoutePointsComponent {
+  constructor(points) {
+    this._points = points;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createRoutePointsTemplate(this._points);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
