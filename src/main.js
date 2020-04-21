@@ -10,11 +10,10 @@ import SortComponent from "./components/sort.js";
 import DaysComponent from "./components/trip-days.js";
 import TripInfoComponent from "./components/trip-info.js";
 import {generateTripPoints} from "./components/mock/route-point.js";
-import {getAllDates, datesArray, getUniqueDates} from "./components/points-in-days.js";
-import {render} from "./utils.js";
+import {render, getAllDates, datesArray, getUniqueDates} from "./utils.js";
 import {RenderPosition} from "./components/constants.js";
 
-const POINTS_COUNT = 10;
+const POINTS_COUNT = 25;
 const tripPoint = generateTripPoints(POINTS_COUNT);
 const sortedTripPoints = tripPoint.sort((a, b) => a.dateFrom > b.dateFrom ? 1 : -1);
 
@@ -46,7 +45,6 @@ const renderPoints = (container, routePoint) => {
   eventSaveButton.addEventListener(`click`, replaceEditFormToPoint);
   eventResetButton.addEventListener(`click`, replaceEditFormToPoint);
 
-  // renderSortedTripPoints(filterPoints, index);
   render(container, routePointComponent.getElement());
 };
 
@@ -70,68 +68,28 @@ getAllDates(sortedTripPoints);
 const tripEventsDates = datesArray;
 const tripDays = getUniqueDates(tripEventsDates);
 
-const eventsListElement = new EventsListComponent();
-
-// tripDays.map((day, index) => {
-//   render(daysContainerElement.getElement(), new DayComponent(day, index).getElement());
-// });
-
-const dayContainerElement = new DayComponent();
-
-// const renderTripPointsInDays = () => {
-
-//   tripDays.forEach((day, index) => {
-//     const filterPoints = sortedTripPoints.filter((point) => {
-//       return point.dateFrom.toDateString() === day;
-//     });
-//     console.log(dayContainerElement.getElement(day, index));
-//     render(dayContainerElement.getElement(day, index), eventsListElement.getElement());
-//     // renderPoints(eventsListElement.getElement(index), filterPoints[index], filterPoints, index);
-//     console.log(dayContainerElement.getElement(day, index));
-//   });
-
-//   // Эксперименты с переписыванием функции, но ничего хорошего не получилось. Консоль вообще молчит и ничего не выводится.
-
-//   // tripDays.forEach((day, index) => {
-//   //   const date = new Date(day);
-
-//   //   sortedTripPoints.forEach((point) => {
-//   //     if (point.dateFrom.toDateString() === date.toDateString()) {
-//   //       console.log(dayContainerElement.getElement(index));
-//   //       render(dayContainerElement.getElement(index), eventsListElement.getElement());
-//   //       renderPoints(eventsListElement.getElement(), point);
-//   //     }
-//   //   });
-//   // });
-// };
-
-// renderTripPointsInDays();
-
 const renderTripDays = () => {
+  let tripDayComponent = null;
+  let dayDate = null;
+  let dateTime = null;
 
-  let counter = 0;
-  let tripDayEventsList = null;
-  let prevDate = null;
+  tripDays.map((day, index) => {
+    tripDayComponent = new DayComponent(day, index);
+    const eventsListElement = new EventsListComponent();
 
-  for (const event of sortedTripPoints) {
-    const dateFrom = event.dateFrom.toDateString();
+    render(daysContainerElement.getElement(), tripDayComponent.getElement());
+    render(tripDayComponent.getElement(), eventsListElement.getElement());
 
-    counter++;
+    let tripDayEventsList = tripDayComponent.getElement().querySelector(`.trip-events__list`);
+    dayDate = tripDayComponent.getElement().querySelector(`.day__date`);
+    dateTime = new Date(dayDate.dateTime);
 
-    if (prevDate !== dateFrom) {
-      prevDate = dateFrom;
-      const tripDayComponent = new DayComponent(prevDate, counter);
-      // tripDayEventsList = tripDayComponent.getElement().querySelector(`.trip-events__list`);
-      render(daysContainerElement.getElement(), tripDayComponent.getElement(), RenderPosition.BEFOREEND);
-      render(tripDayComponent.getElement(prevDate, counter), eventsListElement.getElement());
-      console.log(tripDayComponent.getElement().querySelector(`.trip-events__list`));
+    for (const point of sortedTripPoints) {
+      if (point.dateFrom.toDateString() === dateTime.toDateString()) {
+        renderPoints(tripDayEventsList, point);
+      }
     }
-    console.log(event.dateFrom.toDateString());
-
-    if (dateFrom === prevDate) {
-      renderPoints(eventsListElement.getElement(), event);
-    }
-  }
+  });
 };
 
 renderTripDays();

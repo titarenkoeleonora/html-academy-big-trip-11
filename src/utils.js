@@ -42,6 +42,19 @@ export const formatDate = (date) => {
   return `${dd}/${mm}/${yy}`;
 };
 
+export const datesArray = [];
+
+export const getAllDates = (defaultArray) => {
+  defaultArray.forEach((element) => {
+    return datesArray.push(element.dateFrom.toDateString());
+  });
+};
+
+export const getUniqueDates = (array) => {
+  return Array.from(new Set(array));
+};
+
+
 export const createElement = (template) => {
   const newElement = document.createElement(`div`);
   newElement.innerHTML = template;

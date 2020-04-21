@@ -1,16 +1,12 @@
-import {
-  MONTHS
-} from "./constants";
-import {
-  createElement
-} from "../utils";
+import {MONTHS} from "./constants";
+import {createElement} from "../utils";
 
 const createDayTemplate = (date, index) => {
   const dateValue = new Date(date);
 
   const day = dateValue.getDate();
   const month = dateValue.getMonth();
-  const year = dateValue.getYear();
+  const year = dateValue.getFullYear();
 
   return (
     `<li class="trip-days__item  day">

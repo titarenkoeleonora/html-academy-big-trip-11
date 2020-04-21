@@ -1,6 +1,5 @@
 import {createElement} from "../utils";
 
-
 const createRouteTemplate = () => {
   return (
     `<div class="trip-info__main">

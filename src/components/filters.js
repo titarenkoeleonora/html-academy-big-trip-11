@@ -1,6 +1,5 @@
 import {createElement} from "../utils";
 
-
 const createFiltersTemplate = () => {
   return (
     `<form class="trip-filters" action="#" method="get">
