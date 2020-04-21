@@ -27,11 +27,11 @@ const [firstTitleElement, secondTitleElement] = tripControlsTitlesElement;
 
 const renderPoints = (container, routePoint) => {
   const replacePointToEditForm = () => {
-    container.replaceChild(EventEditComponent.getElement(), RoutePointsComponent.getElement());
+    container.replaceChild(eventEditComponent.getElement(), routePointComponent.getElement());
   };
 
   const replaceEditFormToPoint = () => {
-    container.replaceChild(RoutePointsComponent.getElement(), EventEditComponent.getElement());
+    container.replaceChild(routePointComponent.getElement(), eventEditComponent.getElement());
   };
 
   const routePointComponent = new RoutePointsComponent(routePoint);
@@ -46,6 +46,7 @@ const renderPoints = (container, routePoint) => {
   eventSaveButton.addEventListener(`click`, replaceEditFormToPoint);
   eventResetButton.addEventListener(`click`, replaceEditFormToPoint);
 
+  // renderSortedTripPoints(filterPoints, index);
   render(container, routePointComponent.getElement());
 };
 
@@ -71,41 +72,66 @@ const tripDays = getUniqueDates(tripEventsDates);
 
 const eventsListElement = new EventsListComponent();
 
-tripDays.map((day, index) => {
-  render(daysContainerElement.getElement(), new DayComponent(day, index).getElement());
-});
+// tripDays.map((day, index) => {
+//   render(daysContainerElement.getElement(), new DayComponent(day, index).getElement());
+// });
 
 const dayContainerElement = new DayComponent();
 
-// !!!!!!!!!!!!!!!!!!!
-// Тут по моей логике должно все выводиться как надо, а оно рендерится только в консоли и в какой-то момент ломается((
-// Не пойму, в чем беда. Вообще, кажется, что очень сильно намудрила в этой функции(( Как ее переписать так, чтобы
-// больше не мучаться с ней?
+// const renderTripPointsInDays = () => {
 
-const renderTripPointsInDays = () => {
+//   tripDays.forEach((day, index) => {
+//     const filterPoints = sortedTripPoints.filter((point) => {
+//       return point.dateFrom.toDateString() === day;
+//     });
+//     console.log(dayContainerElement.getElement(day, index));
+//     render(dayContainerElement.getElement(day, index), eventsListElement.getElement());
+//     // renderPoints(eventsListElement.getElement(index), filterPoints[index], filterPoints, index);
+//     console.log(dayContainerElement.getElement(day, index));
+//   });
 
-  tripDays.forEach((day, index) => {
-    const filterPoints = sortedTripPoints.filter((point) => {
-      return point.dateFrom.toDateString() === day;
-    });
+//   // Эксперименты с переписыванием функции, но ничего хорошего не получилось. Консоль вообще молчит и ничего не выводится.
 
-    render(dayContainerElement.getElement(day, index), eventsListElement.getElement(index));
-    renderPoints(eventsListElement.getElement(index), filterPoints[index]);
-    console.log(dayContainerElement.getElement(day, index));
-  });
+//   // tripDays.forEach((day, index) => {
+//   //   const date = new Date(day);
 
-  // Эксперименты с переписыванием функции, но ничего хорошего не получилось. Консоль вообще молчит и ничего не выводится.
+//   //   sortedTripPoints.forEach((point) => {
+//   //     if (point.dateFrom.toDateString() === date.toDateString()) {
+//   //       console.log(dayContainerElement.getElement(index));
+//   //       render(dayContainerElement.getElement(index), eventsListElement.getElement());
+//   //       renderPoints(eventsListElement.getElement(), point);
+//   //     }
+//   //   });
+//   // });
+// };
 
-  // tripDays.forEach((day, index) => {
-  //   const date = new Date(day);
+// renderTripPointsInDays();
 
-  //   sortedTripPoints.forEach((point) => {
-  //     if (point.dateFrom.toDateString() === date.toDateString()) {
-  //       render(dayContainerElement.getElement(index), eventsListElement.getElement(index));
-  //       renderPoints(eventsListElement.getElement(index), point);
-  //     }
-  //   });
-  // });
+const renderTripDays = () => {
+
+  let counter = 0;
+  let tripDayEventsList = null;
+  let prevDate = null;
+
+  for (const event of sortedTripPoints) {
+    const dateFrom = event.dateFrom.toDateString();
+
+    counter++;
+
+    if (prevDate !== dateFrom) {
+      prevDate = dateFrom;
+      const tripDayComponent = new DayComponent(prevDate, counter);
+      // tripDayEventsList = tripDayComponent.getElement().querySelector(`.trip-events__list`);
+      render(daysContainerElement.getElement(), tripDayComponent.getElement(), RenderPosition.BEFOREEND);
+      render(tripDayComponent.getElement(prevDate, counter), eventsListElement.getElement());
+      console.log(tripDayComponent.getElement().querySelector(`.trip-events__list`));
+    }
+    console.log(event.dateFrom.toDateString());
+
+    if (dateFrom === prevDate) {
+      renderPoints(eventsListElement.getElement(), event);
+    }
+  }
 };
 
-renderTripPointsInDays();
+renderTripDays();
