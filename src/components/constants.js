@@ -1,3 +1,7 @@
+export const Key = {
+  ESCAPE: `Escape`,
+};
+
 export const CITIES = [`Amsterdam`, `New-York`, `Geneva`, `Moscow`, `Paris`, `Saint Petersburg`, `Frankfurt`, `Mainz`, `Abu-Dhabi`, `Dubai`];
 
 export const Time = {
