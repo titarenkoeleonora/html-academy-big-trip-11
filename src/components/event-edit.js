@@ -1,6 +1,6 @@
-import {CITIES, typeRoutePointMap, TypeRoutePointIndex} from "./constants";
-import {formatDate, formatTime} from "../utils";
+import {CITIES, typeRoutePointMap, TypeRoutePointIndex} from "../constants";
 import AbstractComponent from "./abstract-component";
+import {formatDate, formatTime} from "../utils/date-utils";
 
 const createOptionsMarkup = (cities) => cities.map((city) => {
   return (

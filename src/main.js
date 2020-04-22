@@ -10,9 +10,10 @@ import SortComponent from "./components/sort.js";
 import DaysComponent from "./components/trip-days.js";
 import TripInfoComponent from "./components/trip-info.js";
 import {generateTripPoints} from "./components/mock/route-point.js";
-import {render, getAllDates, datesArray, getUniqueDates} from "./utils.js";
-import {RenderPosition, Key} from "./components/constants.js";
+import {RenderPosition, Key} from "./constants.js";
 import NoPointsComponent from "./components/no-points.js";
+import {getAllDates, datesArray, getUniqueDates} from "./utils/date-utils.js";
+import {render} from "./utils/common.js";
 
 const POINTS_COUNT = 25;
 const tripPoint = generateTripPoints(POINTS_COUNT);

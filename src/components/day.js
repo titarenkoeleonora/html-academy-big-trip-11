@@ -1,5 +1,5 @@
-import {MONTHS} from "./constants";
 import AbstractComponent from "./abstract-component";
+import {MONTHS} from "../constants";
 
 const createDayTemplate = (date, index) => {
   const dateValue = new Date(date);
