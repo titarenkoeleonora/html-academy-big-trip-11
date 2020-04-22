@@ -96,7 +96,7 @@ const renderTripDays = () => {
   let dateTime = null;
 
   render(tripInfoElement.getElement(), new RouteComponent().getElement(), RenderPosition.AFTERBEGIN);
-  render(tripEventsElement, new SortComponent().getElement());
+  render(tripEventsElement, new SortComponent().getElement(), RenderPosition.AFTERBEGIN);
 
   tripDays.map((day, index) => {
     tripDayComponent = new DayComponent(day, index);

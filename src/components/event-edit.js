@@ -1,5 +1,6 @@
 import {CITIES, typeRoutePointMap, TypeRoutePointIndex} from "./constants";
-import {formatDate, formatTime, createElement} from "../utils";
+import {formatDate, formatTime} from "../utils";
+import AbstractComponent from "./abstract-component";
 
 const createOptionsMarkup = (cities) => cities.map((city) => {
   return (
@@ -131,24 +132,14 @@ const createEventEditTemplate = (tripPoint) => {
   );
 };
 
-export default class EventEditComponent {
+export default class EventEditComponent extends AbstractComponent {
   constructor(eventEdit) {
+    super();
+
     this._eventEdit = eventEdit;
-    this._element = null;
   }
 
   getTemplate() {
     return createEventEditTemplate(this._eventEdit);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
