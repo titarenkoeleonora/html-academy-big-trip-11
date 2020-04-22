@@ -11,7 +11,8 @@ import DaysComponent from "./components/trip-days.js";
 import TripInfoComponent from "./components/trip-info.js";
 import {generateTripPoints} from "./components/mock/route-point.js";
 import {render, getAllDates, datesArray, getUniqueDates} from "./utils.js";
-import {RenderPosition} from "./components/constants.js";
+import {RenderPosition, Key} from "./components/constants.js";
+import NoPointsComponent from "./components/no-points.js";
 
 const POINTS_COUNT = 25;
 const tripPoint = generateTripPoints(POINTS_COUNT);
@@ -33,17 +34,35 @@ const renderPoints = (container, routePoint) => {
     container.replaceChild(routePointComponent.getElement(), eventEditComponent.getElement());
   };
 
-  const routePointComponent = new RoutePointsComponent(routePoint);
+  const onEcsKeyDown = (evt) => {
+    if (evt.key === Key.ESCAPE) {
+      replaceEditFormToPoint();
+      document.removeEventListener(`keydown`, onEcsKeyDown);
+    }
+  };
 
+  const routePointComponent = new RoutePointsComponent(routePoint);
   const rollupButton = routePointComponent.getElement().querySelector(`.event__rollup-btn`);
-  rollupButton.addEventListener(`click`, replacePointToEditForm);
+  rollupButton.addEventListener(`click`, () => {
+    replacePointToEditForm();
+    document.addEventListener(`keydown`, onEcsKeyDown);
+  });
 
   const eventEditComponent = new EventEditComponent(routePoint);
   const eventSaveButton = eventEditComponent.getElement().querySelector(`.event__save-btn`);
   const eventResetButton = eventEditComponent.getElement().querySelector(`.event__reset-btn`);
 
-  eventSaveButton.addEventListener(`click`, replaceEditFormToPoint);
-  eventResetButton.addEventListener(`click`, replaceEditFormToPoint);
+  eventSaveButton.addEventListener(`click`, (evt) => {
+    evt.preventDefault();
+    replaceEditFormToPoint();
+    document.removeEventListener(`keydown`, onEcsKeyDown);
+  });
+
+  eventResetButton.addEventListener(`click`, (evt) => {
+    evt.preventDefault();
+    replaceEditFormToPoint();
+    document.removeEventListener(`keydown`, onEcsKeyDown);
+  });
 
   render(container, routePointComponent.getElement());
 };
@@ -52,13 +71,10 @@ const tripInfoElement = new TripInfoComponent();
 
 render(tripMainElement, tripInfoElement.getElement(), RenderPosition.AFTERBEGIN);
 
-render(tripInfoElement.getElement(), new RouteComponent().getElement());
 render(tripInfoElement.getElement(), new CostComponent().getElement());
 
 render(firstTitleElement, new SiteMenuComponent().getElement(), RenderPosition.AFTEREND);
 render(secondTitleElement, new FiltersComponent().getElement(), RenderPosition.AFTEREND);
-
-render(tripEventsElement, new SortComponent().getElement());
 
 const daysContainerElement = new DaysComponent();
 render(tripEventsElement, daysContainerElement.getElement());
@@ -69,9 +85,18 @@ const tripEventsDates = datesArray;
 const tripDays = getUniqueDates(tripEventsDates);
 
 const renderTripDays = () => {
+
+  if (sortedTripPoints.length === 0) {
+    render(tripEventsElement, new NoPointsComponent().getElement());
+    return;
+  }
+
   let tripDayComponent = null;
   let dayDate = null;
   let dateTime = null;
+
+  render(tripInfoElement.getElement(), new RouteComponent().getElement(), RenderPosition.AFTERBEGIN);
+  render(tripEventsElement, new SortComponent().getElement());
 
   tripDays.map((day, index) => {
     tripDayComponent = new DayComponent(day, index);
