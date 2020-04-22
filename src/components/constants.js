@@ -11,6 +11,12 @@ export const MONTHS = [`JAN`, `FEB`, `MAR`, `APR`, `MAY`, `JUN`, `JUL`, `AUG`, `
 
 export const MAX_SHOWED_OFFERS_COUNT = 3;
 
+export const RenderPosition = {
+  AFTERBEGIN: `afterbegin`,
+  BEFOREEND: `beforeend`,
+  AFTEREND: `afterend`,
+};
+
 export const TypeRoutePointIndex = {
   MIN_ACTIONS_INDEX: 0,
   MAX_ACTIONS_INDEX: 7,
