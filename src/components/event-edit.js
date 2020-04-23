@@ -144,10 +144,10 @@ export default class EventEditComponent extends AbstractComponent {
   }
 
   setSaveButtonHandler(handler) {
-    this.getElement().querySelector(`.event__save-btn`).addEventListener(`click`, handler);
+    this.getElement().addEventListener(`submit`, handler);
   }
 
   setResetButtonHandler(handler) {
-    this.getElement().querySelector(`.event__reset-btn`).addEventListener(`click`, handler);
+    this.getElement().addEventListener(`reset`, handler);
   }
 }
