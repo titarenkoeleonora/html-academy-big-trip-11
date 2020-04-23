@@ -60,4 +60,8 @@ export default class RoutePointsComponent extends AbstractComponent {
   getTemplate() {
     return createRoutePointsTemplate(this._points);
   }
+
+  setClickHandler(handler) {
+    this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, handler);
+  }
 }

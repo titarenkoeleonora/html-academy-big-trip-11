@@ -13,7 +13,7 @@ import {generateTripPoints} from "./components/mock/route-point.js";
 import {RenderPosition, Key} from "./constants.js";
 import NoPointsComponent from "./components/no-points.js";
 import {getAllDates, datesArray, getUniqueDates} from "./utils/date-utils.js";
-import {render} from "./utils/common.js";
+import {render, replace} from "./utils/render.js";
 
 const POINTS_COUNT = 25;
 const tripPoint = generateTripPoints(POINTS_COUNT);
@@ -28,11 +28,11 @@ const [firstTitleElement, secondTitleElement] = tripControlsTitlesElement;
 
 const renderPoints = (container, routePoint) => {
   const replacePointToEditForm = () => {
-    container.replaceChild(eventEditComponent.getElement(), routePointComponent.getElement());
+    replace(eventEditComponent, routePointComponent);
   };
 
   const replaceEditFormToPoint = () => {
-    container.replaceChild(routePointComponent.getElement(), eventEditComponent.getElement());
+    replace(routePointComponent, eventEditComponent);
   };
 
   const onEcsKeyDown = (evt) => {
@@ -43,42 +43,40 @@ const renderPoints = (container, routePoint) => {
   };
 
   const routePointComponent = new RoutePointsComponent(routePoint);
-  const rollupButton = routePointComponent.getElement().querySelector(`.event__rollup-btn`);
-  rollupButton.addEventListener(`click`, () => {
+
+  routePointComponent.setClickHandler(() => {
     replacePointToEditForm();
     document.addEventListener(`keydown`, onEcsKeyDown);
   });
 
   const eventEditComponent = new EventEditComponent(routePoint);
-  const eventSaveButton = eventEditComponent.getElement().querySelector(`.event__save-btn`);
-  const eventResetButton = eventEditComponent.getElement().querySelector(`.event__reset-btn`);
 
-  eventSaveButton.addEventListener(`click`, (evt) => {
+  eventEditComponent.setSaveButtonHandler((evt) => {
     evt.preventDefault();
     replaceEditFormToPoint();
     document.removeEventListener(`keydown`, onEcsKeyDown);
   });
 
-  eventResetButton.addEventListener(`click`, (evt) => {
+  eventEditComponent.setResetButtonHandler((evt) => {
     evt.preventDefault();
     replaceEditFormToPoint();
     document.removeEventListener(`keydown`, onEcsKeyDown);
   });
 
-  render(container, routePointComponent.getElement());
+  render(container, routePointComponent);
 };
 
 const tripInfoElement = new TripInfoComponent();
 
-render(tripMainElement, tripInfoElement.getElement(), RenderPosition.AFTERBEGIN);
+render(tripMainElement, tripInfoElement, RenderPosition.AFTERBEGIN);
 
-render(tripInfoElement.getElement(), new CostComponent().getElement());
+render(tripInfoElement.getElement(), new CostComponent());
 
-render(firstTitleElement, new SiteMenuComponent().getElement(), RenderPosition.AFTEREND);
-render(secondTitleElement, new FiltersComponent().getElement(), RenderPosition.AFTEREND);
+render(firstTitleElement, new SiteMenuComponent(), RenderPosition.AFTEREND);
+render(secondTitleElement, new FiltersComponent(), RenderPosition.AFTEREND);
 
 const daysContainerElement = new DaysComponent();
-render(tripEventsElement, daysContainerElement.getElement());
+render(tripEventsElement, daysContainerElement);
 
 getAllDates(sortedTripPoints);
 
@@ -88,7 +86,7 @@ const tripDays = getUniqueDates(tripEventsDates);
 const renderTripDays = () => {
 
   if (sortedTripPoints.length === 0) {
-    render(tripEventsElement, new NoPointsComponent().getElement());
+    render(tripEventsElement, new NoPointsComponent());
     return;
   }
 
@@ -96,15 +94,15 @@ const renderTripDays = () => {
   let dayDate = null;
   let dateTime = null;
 
-  render(tripInfoElement.getElement(), new RouteComponent().getElement(), RenderPosition.AFTERBEGIN);
-  render(tripEventsElement, new SortComponent().getElement(), RenderPosition.AFTERBEGIN);
+  render(tripInfoElement.getElement(), new RouteComponent(), RenderPosition.AFTERBEGIN);
+  render(tripEventsElement, new SortComponent(), RenderPosition.AFTERBEGIN);
 
   tripDays.map((day, index) => {
     tripDayComponent = new DayComponent(day, index);
     const eventsListElement = new EventsListComponent();
 
-    render(daysContainerElement.getElement(), tripDayComponent.getElement());
-    render(tripDayComponent.getElement(), eventsListElement.getElement());
+    render(daysContainerElement.getElement(), tripDayComponent);
+    render(tripDayComponent.getElement(), eventsListElement);
 
     let tripDayEventsList = tripDayComponent.getElement().querySelector(`.trip-events__list`);
     dayDate = tripDayComponent.getElement().querySelector(`.day__date`);
