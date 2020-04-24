@@ -1,6 +1,6 @@
-import {CITIES, typeRoutePointMap} from "../constants";
-import {getRandomArrayItem, getRandomInteger} from "../../utils";
-import {getStartDate, getEndDate} from "../date-generation";
+import {CITIES, typeRoutePointMap} from "../../constants";
+import {getStartDate, getEndDate} from "../../utils/date-utils";
+import {getRandomArrayItem, getRandomInteger} from "../../utils/common";
 
 const TripDescriptions = [
   `Lorem ipsum dolor sit amet, consectetur adipiscing elit.`,
