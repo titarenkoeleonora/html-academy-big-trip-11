@@ -7,14 +7,15 @@ const createDayTemplate = (date, index) => {
   const day = dateValue.getDate();
   const month = dateValue.getMonth();
   const year = dateValue.getFullYear();
+  index = index + 1;
 
   return (
     `<li class="trip-days__item  day">
-          <div class="day__info">
-            <span class="day__counter">${index + 1}</span>
-            <time class="day__date" datetime="${year}-${month + 1}-${day}">${MONTHS[month]} ${day}</time>
-          </div>
-        </li>`
+      <div class="day__info">
+        <span class="day__counter">${index ? index : ``}</span>
+          <time class="day__date" datetime="${year}-${month + 1}-${day}">${month ? MONTHS[month] : ``} ${day ? day : ``}</time>
+      </div>
+    </li>`
   );
 };
 
