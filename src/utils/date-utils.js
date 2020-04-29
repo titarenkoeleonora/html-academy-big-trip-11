@@ -15,30 +15,16 @@ export const getEndDate = (date) => {
 };
 
 export const getTimeDifference = (start, end) => {
-  const randomDifferenceMinutes = ((end - start) / Time.HOURS_IN_MS_COEFFICIENT) * Time.MINUTES_IN_HOUR;
-  const days = Math.floor((randomDifferenceMinutes / Time.MINUTES_IN_HOUR) / Time.HOURS_IN_DAY);
-  const hours = (days * Time.HOURS_IN_DAY) - Time.HOURS_IN_DAY;
-  let difference = null;
+  const differenceInMS = end.getTime() - start.getTime();
+  const differenceDays = Math.round(differenceInMS / Time.MS_IN_DAY);
+  const differenceHours = Math.round((differenceInMS % Time.MS_IN_DAY) / Time.MS_IN_HOUR);
+  const differenceMinutes = Math.round(((differenceInMS % Time.MS_IN_DAY) % Time.MS_IN_HOUR) / Time.MS_IN_MINUTE);
 
-  if (randomDifferenceMinutes >= Time.MINUTES_IN_DAY) {
-    if (hours > 0) {
-      difference = `${days + `D`} ${hours + `H`} ${Math.floor(randomDifferenceMinutes % Time.MINUTES_IN_HOUR) + `M`}`;
-      return difference;
-    } else {
-      difference = `${days + `D`} ${Math.floor(randomDifferenceMinutes % Time.MINUTES_IN_HOUR) + `M`}`;
-      return difference;
-    }
-  } else if (randomDifferenceMinutes <= Time.MINUTES_IN_HOUR) {
-    difference = Math.floor(randomDifferenceMinutes) + `M`;
-    return difference;
-  } else if (randomDifferenceMinutes <= Time.MINUTES_IN_DAY) {
-    difference = `${Math.floor(randomDifferenceMinutes / Time.MINUTES_IN_HOUR) + `H`} ${Math.floor(randomDifferenceMinutes % Time.MINUTES_IN_HOUR) + `M`}`;
-    return difference;
-  } else if (randomDifferenceMinutes % Time.MINUTES_IN_HOUR === 0) {
-    difference = Math.floor(randomDifferenceMinutes) / Time.MINUTES_IN_HOUR + `H`;
-    return difference;
-  }
-  return difference;
+  const day = differenceDays > 0 ? differenceDays + `D` : ``;
+  const hours = differenceHours > 0 ? differenceHours + `H ` : ``;
+  const minutes = differenceMinutes > 0 ? differenceMinutes + `M ` : ``;
+
+  return `${day} ${hours} ${minutes}`;
 };
 
 const castTimeFormat = (value) => {

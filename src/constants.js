@@ -5,7 +5,9 @@ export const Key = {
 export const CITIES = [`Amsterdam`, `New-York`, `Geneva`, `Moscow`, `Paris`, `Saint Petersburg`, `Frankfurt`, `Mainz`, `Abu-Dhabi`, `Dubai`];
 
 export const Time = {
-  HOURS_IN_MS_COEFFICIENT: 3600000,
+  MS_IN_DAY: 86400000,
+  MS_IN_HOUR: 3600000,
+  MS_IN_MINUTE: 60000,
   MINUTES_IN_DAY: 1440,
   HOURS_IN_DAY: 24,
   MINUTES_IN_HOUR: 60,
