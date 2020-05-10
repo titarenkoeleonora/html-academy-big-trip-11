@@ -25,12 +25,11 @@ const createPhotosMarkup = (photos) => photos.map((photo) => {
   );
 }).join(`\n`);
 
-const createOfferMarkup = (offers) => offers.map((offer) => {
-  const isChecked = Math.random() > 0.5;
+const createOfferMarkup = (offers) => offers.map((offer, index) => {
   return (
     `<div class="event__offer-selector">
-    <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-1" type="checkbox" name="event-offer-luggage" ${isChecked ? `checked` : ``}>
-    <label class="event__offer-label" for="event-offer-luggage-1">
+    <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-${index + 1}" type="checkbox" name="event-offer-luggage" checked}>
+    <label class="event__offer-label" for="event-offer-luggage-${index + 1}">
       <span class="event__offer-title">${offer.title}</span>
       &plus;
       &euro;&nbsp;<span class="event__offer-price">${offer.price}</span>
@@ -40,7 +39,7 @@ const createOfferMarkup = (offers) => offers.map((offer) => {
 }).join(`\n`);
 
 const createEventEditTemplate = (tripPoint) => {
-  const {type, dateFrom, dateTo, destination, offers, basePrice} = tripPoint;
+  const {type, dateFrom, dateTo, destination, offers, basePrice, isFavorite} = tripPoint;
 
   const tripPointTypesTo = (Object.keys(typeRoutePointMap).slice(TypeRoutePointIndex.MIN_ACTIONS_INDEX, TypeRoutePointIndex.MAX_ACTIONS_INDEX));
   const tripPointTypesIn = (Object.keys(typeRoutePointMap).slice(TypeRoutePointIndex.MAX_ACTIONS_INDEX, TypeRoutePointIndex.MAX_ACTIVITY_INDEX));
@@ -107,7 +106,7 @@ const createEventEditTemplate = (tripPoint) => {
       <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
       <button class="event__reset-btn" type="reset">Cancel</button>
 
-      <input id="event-favorite-1" class="event__favorite-checkbox  visually-hidden" type="checkbox" name="event-favorite" checked>
+      <input id="event-favorite-1" class="event__favorite-checkbox  visually-hidden" type="checkbox" name="event-favorite" ${isFavorite ? `checked` : ``}>
       <label class="event__favorite-btn" for="event-favorite-1">
         <span class="visually-hidden">Add to favorite</span>
         <svg class="event__favorite-icon" width="28" height="28" viewBox="0 0 28 28">
@@ -154,10 +153,6 @@ export default class EventEditComponent extends AbstractSmartComponent {
     this._eventType = this._eventEdit.type;
     this._eventDestination = this._eventEdit.destination;
 
-    this._submitHandler = null;
-    this._resetHandler = null;
-    this._favoriteButtonHandler = null;
-
     this._subscribeOnEvents();
   }
 
@@ -171,7 +166,9 @@ export default class EventEditComponent extends AbstractSmartComponent {
   recoveryListeners() {
     this.setSaveButtonHandler(this._submitHandler);
     this.setResetButtonHandler(this._resetHandler);
+    this.setClickHandler(this._setClickHandler);
     this.setFavoritesButtonClickHandler(this._favoriteButtonHandler);
+
     this._subscribeOnEvents();
   }
 
@@ -204,11 +201,20 @@ export default class EventEditComponent extends AbstractSmartComponent {
   }
 
   setResetButtonHandler(handler) {
-    this.getElement().addEventListener(`reset`, handler);
+    this.getElement().querySelector(`.event__reset-btn`).addEventListener(`click`, handler);
+
+    this._resetHandler = handler;
+  }
+
+  setClickHandler(handler) {
+    this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, handler);
+
+    this._setClickHandler = handler;
   }
 
   setFavoritesButtonClickHandler(handler) {
-    this.getElement().querySelector(`.event__favorite-btn`)
-      .addEventListener(`click`, handler);
+    this.getElement().querySelector(`.event__favorite-btn`).addEventListener(`click`, handler);
+
+    this._favoriteButtonHandler = handler;
   }
 }
