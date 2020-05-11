@@ -55,3 +55,8 @@ export const typeRoutePointMap = {
   'Sightseeing': `in`,
   'Restaurant': `in`,
 };
+
+export const Mode = {
+  DEFAULT: `default`,
+  EDIT: `edit`,
+};

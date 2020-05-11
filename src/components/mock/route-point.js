@@ -45,7 +45,7 @@ const tripOffers = [{
   price: 130
 }];
 
-const descriptionsCount = {
+export const descriptionsCount = {
   MIN: 1,
   MAX: 3,
 };
