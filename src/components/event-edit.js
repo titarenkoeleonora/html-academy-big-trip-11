@@ -3,6 +3,9 @@ import {formatDate, formatTime} from "../utils/date-utils";
 import AbstractSmartComponent from "./abstract-smart-component";
 import {getRandomInteger} from "../utils/common";
 import {descriptionsCount} from "./mock/route-point";
+import flatpickr from "flatpickr";
+
+import "flatpickr/dist/flatpickr.min.css";
 
 const createOptionsMarkup = (cities) => cities.map((city) => {
   return (
@@ -152,7 +155,9 @@ export default class EventEditComponent extends AbstractSmartComponent {
     this._eventEdit = eventEdit;
     this._eventType = this._eventEdit.type;
     this._eventDestination = this._eventEdit.destination;
+    this._flatpickr = null;
 
+    this._applyFlatpickr();
     this._subscribeOnEvents();
   }
 
@@ -174,6 +179,7 @@ export default class EventEditComponent extends AbstractSmartComponent {
 
   rerender() {
     super.rerender();
+    this._applyFlatpickr();
   }
 
   _subscribeOnEvents() {
@@ -216,5 +222,31 @@ export default class EventEditComponent extends AbstractSmartComponent {
     this.getElement().querySelector(`.event__favorite-btn`).addEventListener(`click`, handler);
 
     this._favoriteButtonHandler = handler;
+  }
+
+  _destroyFlatpickr() {
+    this._flatpickr.destroy();
+    this._flatpickr = null;
+  }
+
+  _applyFlatpickr() {
+    const startTime = this.getElement().querySelector(`#event-start-time-1`);
+    const endTime = this.getElement().querySelector(`#event-end-time-1`);
+
+    if (this._flatpickr) {
+      this._destroyFlatpickr();
+    }
+
+    this._flatpickr = flatpickr(startTime, {
+      altInput: true,
+      altFormat: `d/m/y H:i`,
+      defaultDate: this._eventEdit.dateFrom || ``,
+    });
+
+    this._flatpickr = flatpickr(endTime, {
+      altInput: true,
+      altFormat: `d/m/y H:i`,
+      defaultDate: this._eventEdit.dateTo || ``,
+    });
   }
 }

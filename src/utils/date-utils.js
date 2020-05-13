@@ -1,6 +1,8 @@
 import {Time} from "../constants";
 import {getRandomInteger} from "./common";
 
+import moment from "moment";
+
 const MAX_COUNT_DAYS_DIFFERENCE = 1;
 
 export const getStartDate = () => getRandomDate();
@@ -27,17 +29,6 @@ export const getTimeDifference = (start, end) => {
   return `${day} ${hours} ${minutes}`;
 };
 
-const castTimeFormat = (value) => {
-  return value < 10 ? `0${value}` : String(value);
-};
-
-export const formatTime = (date) => {
-  const hours = castTimeFormat(date.getHours());
-  const minutes = castTimeFormat(date.getMinutes());
-
-  return `${hours}:${minutes}`;
-};
-
 export const getRandomDate = () => {
   const targetDate = new Date();
   const sign = Math.random() > 0.5 ? 1 : -1;
@@ -50,13 +41,9 @@ export const getRandomDate = () => {
   return targetDate;
 };
 
-export const formatDate = (date) => {
-  const dd = (`0` + date.getDate()).slice(-2);
-  const mm = (`0` + (date.getMonth() + 1)).slice(-2);
-  const yy = date.getFullYear() % 100;
+export const formatTime = (date) => moment(date).format(`hh:mm`);
 
-  return `${dd}/${mm}/${yy}`;
-};
+export const formatDate = (date) => moment(date).format(`DD/MM/YY`);
 
 export const datesArray = [];
 
