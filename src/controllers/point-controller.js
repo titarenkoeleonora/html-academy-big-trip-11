@@ -1,8 +1,7 @@
 import RoutePointsComponent from "../components/route-points";
 import EventEditComponent from "../components/event-edit";
-import {replace, render} from "../utils/render";
+import {replace, render, remove} from "../utils/render";
 import {Key, Mode, RenderPosition} from "../constants";
-import {remove} from "../../../1120597-taskmanager-11/src/utils/render";
 
 export const EmptyPoint = {
   id: ``,
