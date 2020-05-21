@@ -231,8 +231,8 @@ export default class EventEditComponent extends AbstractSmartComponent {
     let description = null;
     let pictures = null;
     let offers = null;
-    const start = formData.get(`event-start-time`);
-    const end = formData.get(`event-end-time`);
+    const start = this._eventEdit.dateFrom;
+    const end = this._eventEdit.dateTo;
     if (this._mode !== Mode.ADDING) {
       description = document.querySelector(`.event__destination-description`).textContent;
       pictures = [...document.querySelectorAll(`.event__photo`)];
@@ -246,12 +246,12 @@ export default class EventEditComponent extends AbstractSmartComponent {
         };
       });
     }
-
+    console.log(end);
     return {
       id: String(new Date() + Math.random()),
       type: this._eventEdit.type,
-      dateFrom: start ? new Date(start) : null,
-      dateTo: end ? new Date(end) : null,
+      dateFrom: start ? start : null,
+      dateTo: end ? end : null,
       destination: {
         name: encode(formData.get(`event-destination`)),
         description,
