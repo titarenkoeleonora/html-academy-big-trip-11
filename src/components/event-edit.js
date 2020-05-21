@@ -246,7 +246,7 @@ export default class EventEditComponent extends AbstractSmartComponent {
         };
       });
     }
-    console.log(end);
+
     return {
       id: String(new Date() + Math.random()),
       type: this._eventEdit.type,
