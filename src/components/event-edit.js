@@ -228,7 +228,7 @@ export default class EventEditComponent extends AbstractSmartComponent {
   }
 
   _parseFormData(formData) {
-    const description = null;
+    let description = null;
     let pictures = null;
     let offers = null;
     const start = formData.get(`event-start-time`);
