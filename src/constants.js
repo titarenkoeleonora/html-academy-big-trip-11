@@ -242,3 +242,16 @@ export const FilterType = {
   FUTURE: `future`,
   PAST: `past`,
 };
+
+export const ChartDataIcons = {
+  'Taxi': `🚕 TAXI`,
+  'Bus': `🚌 BUS`,
+  'Train': `🚂 TRAIN`,
+  'Ship': `🛳 SHIP`,
+  'Transport': `🚊 TRANSPORT`,
+  'Drive': `🚗 DRIVE`,
+  'Flight': `✈️ FLIGHT`,
+  'Check-in': `🏨 CHECK-IN`,
+  'Sightseeing': `🏛 SIGHTSEEING`,
+  'Restaurant': `🍴 RESTAURANT`,
+};

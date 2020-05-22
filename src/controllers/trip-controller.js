@@ -58,6 +58,16 @@ export default class TripController {
     this._pointsModel.setFilterChangeHandler(this._filterChangeHandler);
   }
 
+  hide() {
+    this._daysComponent.hide();
+    this._sortComponent.hide();
+  }
+
+  show() {
+    this._daysComponent.show();
+    this._sortComponent.show();
+  }
+
   render() {
     const points = this._pointsModel.getPoints();
     render(tripMainElement, this._tripInfoComponent, RenderPosition.AFTERBEGIN);
