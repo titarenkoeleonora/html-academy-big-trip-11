@@ -1,4 +1,4 @@
-import {CITIES, typeRoutePointMap} from "../../constants";
+import {CITIES, typeRoutePointMap, tripOffers} from "../../constants";
 import {getStartDate, getEndDate} from "../../utils/date-utils";
 import {getRandomArrayItem, getRandomInteger} from "../../utils/common";
 
@@ -15,35 +15,6 @@ const TripDescriptions = [
   `Nunc fermentum tortor ac porta dapibus.`,
   `In rutrum ac purus sit amet tempus.`,
 ];
-
-const tripOffers = [{
-  title: `Upgrade to a business class`,
-  price: 150
-}, {
-  title: `Choose the radio station`,
-  price: 50
-}, {
-  title: `Choose temperature`,
-  price: 120
-}, {
-  title: `Drive quickly, I'm in a hurry`,
-  price: 130
-}, {
-  title: `Drive slowly`,
-  price: 70
-}, {
-  title: `Add luggage`,
-  price: 30
-}, {
-  title: `Switch to comfort class`,
-  price: 100
-}, {
-  title: `Choose seats`,
-  price: 130
-}, {
-  title: `Add excursion`,
-  price: 130
-}];
 
 export const descriptionsCount = {
   MIN: 1,
@@ -83,22 +54,31 @@ const getRandomPictures = () => {
   return photosArray;
 };
 
-const getRandomOffers = () => {
+const getRandomOffers = (offers) => {
   const offersArray = [];
   const count = getRandomInteger(offersCount.MAX);
+
   for (let i = 0; i < count; i++) {
-    offersArray.push(getRandomArrayItem(tripOffers));
+    const offer = getRandomArrayItem(offers);
+    if (offersArray.indexOf(offer) === -1) {
+      offersArray.push(offer);
+      offer.checked = Math.random() > 0.5;
+    }
   }
+
+
   return offersArray;
 };
 
 export const getTripPoint = () => {
+  const pointType = getRandomTripType();
   const start = getStartDate();
   const end = getEndDate(start);
+  const allOffers = getRandomOffers(tripOffers[pointType.toLowerCase()]);
 
   return {
     id: String(new Date() + Math.random()),
-    type: getRandomTripType(),
+    type: pointType,
     dateFrom: start,
     dateTo: end,
     destination: {
@@ -108,7 +88,7 @@ export const getTripPoint = () => {
     },
     basePrice: getRandomInteger(priceSize.MAX, priceSize.MIN),
     isFavorite: Math.random() > 0.5,
-    offers: getRandomOffers(),
+    offers: allOffers,
   };
 };
 
@@ -117,4 +97,3 @@ export const generateTripPoints = (count) => {
     .fill(``)
     .map(getTripPoint);
 };
-
