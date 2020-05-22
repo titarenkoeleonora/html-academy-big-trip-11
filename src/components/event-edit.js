@@ -1,4 +1,4 @@
-import {CITIES, typeRoutePointMap, TypeRoutePointIndex, TripDescriptions} from "../constants";
+import {CITIES, typeRoutePointMap, TypeRoutePointIndex, TripDescriptions, Mode} from "../constants";
 import {formatDate, formatTime} from "../utils/date-utils";
 import AbstractSmartComponent from "./abstract-smart-component";
 import {getRandomInteger} from "../utils/common";
@@ -6,6 +6,7 @@ import {descriptionsCount} from "./mock/route-point";
 import flatpickr from "flatpickr";
 
 import "flatpickr/dist/flatpickr.min.css";
+import {encode} from "he";
 
 const createOptionsMarkup = (cities) => cities.map((city) => {
   return (
@@ -41,7 +42,48 @@ const createOfferMarkup = (offers) => offers.map((offer, index) => {
   );
 }).join(`\n`);
 
-const createEventEditTemplate = (tripPoint) => {
+const createEdidtngMarkup = (isFavorite, offersMarkup, destination, photosMarkup) => {
+  return (
+    `<input id="event-favorite-1" class="event__favorite-checkbox  visually-hidden" type="checkbox" name="event-favorite" ${isFavorite ? `checked` : ``}>
+      <label class="event__favorite-btn" for="event-favorite-1">
+        <span class="visually-hidden">Add to favorite</span>
+        <svg class="event__favorite-icon" width="28" height="28" viewBox="0 0 28 28">
+          <path d="M14 21l-8.22899 4.3262 1.57159-9.1631L.685209 9.67376 9.8855 8.33688 14 0l4.1145 8.33688 9.2003 1.33688-6.6574 6.48934 1.5716 9.1631L14 21z"/>
+        </svg>
+      </label>
+
+      <button class="event__rollup-btn" type="button">
+        <span class="visually-hidden">Open event</span>
+      </button>
+    </header>
+    <section class="event__details">
+      <section class="event__section  event__section--offers">
+        <h3 class="event__section-title  event__section-title--offers">Offers</h3>
+
+        <div class="event__available-offers">
+          ${offersMarkup}
+
+        </div>
+      </section>
+
+      <section class="event__section  event__section--destination">
+        <h3 class="event__section-title  event__section-title--destination">Destination</h3>
+        <p class="event__destination-description">${destination.description}</p>
+
+        <div class="event__photos-container">
+          <div class="event__photos-tape">
+          <div class="event__photos-tape">
+          ${photosMarkup}
+        </div>
+          </div>
+        </div>
+      </section>
+    </section>
+    </form>`
+  );
+};
+
+const createEventEditTemplate = (tripPoint, mode) => {
   const {type, dateFrom, dateTo, destination, offers, basePrice, isFavorite} = tripPoint;
 
   const tripPointTypesTo = (Object.keys(typeRoutePointMap).slice(TypeRoutePointIndex.MIN_ACTIONS_INDEX, TypeRoutePointIndex.MAX_ACTIONS_INDEX));
@@ -49,9 +91,12 @@ const createEventEditTemplate = (tripPoint) => {
 
   const typeTransferMarkup = createTypeMarkup(tripPointTypesTo);
   const typeActivityMarkup = createTypeMarkup(tripPointTypesIn);
-  const photosMarkup = createPhotosMarkup(destination.pictures);
-  const offersMarkup = createOfferMarkup(offers, Math.random() > 0.5);
+  const photosMarkup = destination.pictures ? createPhotosMarkup(destination.pictures) : ``;
+  const offersMarkup = offers ? createOfferMarkup(offers, Math.random() > 0.5) : ``;
   const optionMarkup = createOptionsMarkup(CITIES);
+
+  const resetButtonMode = (mode === Mode.ADDING ? `Cancel` : `Delete`);
+  const edidtngMarkup = (mode === Mode.ADDING ? `` : createEdidtngMarkup(isFavorite, offersMarkup, destination, photosMarkup));
 
   return (
     `<form class="trip-events__item  event  event--edit" action="#" method="post">
@@ -107,72 +152,47 @@ const createEventEditTemplate = (tripPoint) => {
       </div>
 
       <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-      <button class="event__reset-btn" type="reset">Cancel</button>
+      <button class="event__reset-btn" type="reset">${resetButtonMode}</button>
 
-      <input id="event-favorite-1" class="event__favorite-checkbox  visually-hidden" type="checkbox" name="event-favorite" ${isFavorite ? `checked` : ``}>
-      <label class="event__favorite-btn" for="event-favorite-1">
-        <span class="visually-hidden">Add to favorite</span>
-        <svg class="event__favorite-icon" width="28" height="28" viewBox="0 0 28 28">
-          <path d="M14 21l-8.22899 4.3262 1.57159-9.1631L.685209 9.67376 9.8855 8.33688 14 0l4.1145 8.33688 9.2003 1.33688-6.6574 6.48934 1.5716 9.1631L14 21z"/>
-        </svg>
-      </label>
-
-      <button class="event__rollup-btn" type="button">
-        <span class="visually-hidden">Open event</span>
-      </button>
-    </header>
-    <section class="event__details">
-      <section class="event__section  event__section--offers">
-        <h3 class="event__section-title  event__section-title--offers">Offers</h3>
-
-        <div class="event__available-offers">
-          ${offersMarkup}
-
-        </div>
-      </section>
-
-      <section class="event__section  event__section--destination">
-        <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-        <p class="event__destination-description">${destination.description}</p>
-
-        <div class="event__photos-container">
-          <div class="event__photos-tape">
-          <div class="event__photos-tape">
-          ${photosMarkup}
-        </div>
-          </div>
-        </div>
-      </section>
-    </section>
-  </form>`
+      ${edidtngMarkup}`
   );
 };
 
 export default class EventEditComponent extends AbstractSmartComponent {
-  constructor(eventEdit) {
+  constructor(eventEdit, mode) {
     super();
 
     this._eventEdit = eventEdit;
-    this._eventType = this._eventEdit.type;
     this._eventDestination = this._eventEdit.destination;
     this._flatpickr = null;
+    this._resetButtonClickHandler = null;
+    this._mode = mode;
 
+    this._parseFormData = this._parseFormData.bind(this);
     this._applyFlatpickr();
     this._subscribeOnEvents();
   }
 
   getTemplate() {
-    return createEventEditTemplate(this._eventEdit, {
-      type: this._eventType,
-      destination: this._eventDestination
-    });
+    return createEventEditTemplate(this._eventEdit, this._mode);
+  }
+
+  removeElement() {
+    if (this._flatpickr) {
+      this._flatpickr.destroy();
+      this._flatpickr = null;
+    }
+
+    super.removeElement();
   }
 
   recoveryListeners() {
     this.setSaveButtonHandler(this._submitHandler);
-    this.setResetButtonHandler(this._resetHandler);
+    this.setResetButtonHandler(this._resetButtonClickHandler);
     this.setClickHandler(this._setClickHandler);
-    this.setFavoritesButtonClickHandler(this._favoriteButtonHandler);
+    if (this._mode !== Mode.ADDING) {
+      this.setFavoritesButtonClickHandler(this._favoriteButtonHandler);
+    }
 
     this._subscribeOnEvents();
   }
@@ -200,6 +220,48 @@ export default class EventEditComponent extends AbstractSmartComponent {
     });
   }
 
+  getData() {
+    const form = this.getElement();
+    const formData = new FormData(form);
+
+    return this._parseFormData(formData);
+  }
+
+  _parseFormData(formData) {
+    let description = null;
+    let pictures = null;
+    let offers = null;
+    const start = this._eventEdit.dateFrom;
+    const end = this._eventEdit.dateTo;
+    if (this._mode !== Mode.ADDING) {
+      description = document.querySelector(`.event__destination-description`).textContent;
+      pictures = [...document.querySelectorAll(`.event__photo`)];
+      offers = [...document.querySelectorAll(`.event__offer-selector`)];
+
+      pictures = pictures.map((photo) => photo.src);
+      offers = offers.map((offer) => {
+        return {
+          title: offer.querySelector(`.event__offer-title`).textContent,
+          price: offer.querySelector(`.event__offer-price`).textContent
+        };
+      });
+    }
+
+    return {
+      id: String(new Date() + Math.random()),
+      type: this._eventEdit.type,
+      dateFrom: start ? start : null,
+      dateTo: end ? end : null,
+      destination: {
+        name: encode(formData.get(`event-destination`)),
+        description,
+        pictures,
+      },
+      basePrice: parseInt(encode(formData.get(`event-price`)), 10),
+      offers,
+    };
+  }
+
   setSaveButtonHandler(handler) {
     this.getElement().addEventListener(`submit`, handler);
 
@@ -209,13 +271,15 @@ export default class EventEditComponent extends AbstractSmartComponent {
   setResetButtonHandler(handler) {
     this.getElement().querySelector(`.event__reset-btn`).addEventListener(`click`, handler);
 
-    this._resetHandler = handler;
+    this._resetButtonClickHandler = handler;
   }
 
   setClickHandler(handler) {
-    this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, handler);
+    if (this._mode !== Mode.ADDING) {
+      this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, handler);
 
-    this._setClickHandler = handler;
+      this._setClickHandler = handler;
+    }
   }
 
   setFavoritesButtonClickHandler(handler) {

@@ -15,7 +15,7 @@ const createOffersMarkup = (offers) => offers.slice(0, MAX_SHOWED_OFFERS_COUNT).
 const createRoutePointsTemplate = (tripPoint) => {
   const {type, dateFrom, dateTo, destination, basePrice, offers} = tripPoint;
 
-  const offersMarkup = createOffersMarkup(offers);
+  const offersMarkup = offers ? createOffersMarkup(offers) : ``;
   return (
     `<li class="trip-events__item">
       <div class="event">

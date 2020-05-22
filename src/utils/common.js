@@ -8,3 +8,7 @@ export const getRandomArrayItem = (array) => {
 
   return array[randomIndex];
 };
+
+export const isFuture = (point) => point.dateFrom > Date.now();
+
+export const isPast = (point) => point.dateFrom < Date.now();

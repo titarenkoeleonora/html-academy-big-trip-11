@@ -97,6 +97,7 @@ export const getTripPoint = () => {
   const end = getEndDate(start);
 
   return {
+    id: String(new Date() + Math.random()),
     type: getRandomTripType(),
     dateFrom: start,
     dateTo: end,

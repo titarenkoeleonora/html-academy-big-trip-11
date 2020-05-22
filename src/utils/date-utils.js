@@ -45,10 +45,9 @@ export const formatTime = (date) => moment(date).format(`hh:mm`);
 
 export const formatDate = (date) => moment(date).format(`DD/MM/YY`);
 
-export const datesArray = [];
-
-export const getAllDates = (defaultArray) => {
-  defaultArray.forEach((element) => {
+export const getAllDates = (defaultArray, datesArray) => {
+  const sortedArray = defaultArray.sort((a, b) => a.dateFrom > b.dateFrom ? 1 : -1);
+  sortedArray.forEach((element) => {
     return datesArray.push(element.dateFrom.toDateString());
   });
 };
