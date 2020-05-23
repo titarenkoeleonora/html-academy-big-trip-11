@@ -30,9 +30,10 @@ const createPhotosMarkup = (photos) => photos.map((photo) => {
 }).join(`\n`);
 
 const createOfferMarkup = (offers) => offers.map((offer, index) => {
+
   return (
     `<div class="event__offer-selector">
-    <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-${index + 1}" type="checkbox" name="event-offer-luggage" checked}>
+    <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-${index + 1}" type="checkbox" name="event-offer-luggage" ${offer.checked ? `checked` : ``}>
     <label class="event__offer-label" for="event-offer-luggage-${index + 1}">
       <span class="event__offer-title">${offer.title}</span>
       &plus;
@@ -92,7 +93,7 @@ const createEventEditTemplate = (tripPoint, mode) => {
   const typeTransferMarkup = createTypeMarkup(tripPointTypesTo);
   const typeActivityMarkup = createTypeMarkup(tripPointTypesIn);
   const photosMarkup = destination.pictures ? createPhotosMarkup(destination.pictures) : ``;
-  const offersMarkup = offers ? createOfferMarkup(offers, Math.random() > 0.5) : ``;
+  const offersMarkup = offers ? createOfferMarkup(offers) : ``;
   const optionMarkup = createOptionsMarkup(CITIES);
 
   const resetButtonMode = (mode === Mode.ADDING ? `Cancel` : `Delete`);
@@ -168,6 +169,8 @@ export default class EventEditComponent extends AbstractSmartComponent {
     this._resetButtonClickHandler = null;
     this._mode = mode;
 
+    this._offers = [...document.querySelectorAll(`.event__offer-checkbox`)];
+
     this._parseFormData = this._parseFormData.bind(this);
     this._applyFlatpickr();
     this._subscribeOnEvents();
@@ -204,6 +207,7 @@ export default class EventEditComponent extends AbstractSmartComponent {
 
   _subscribeOnEvents() {
     const element = this.getElement();
+    const offersCheckbox = document.querySelector(`.event__offer-checkbox`);
 
     element.querySelector(`.event__type-list`).addEventListener(`change`, (evt) => {
       this._eventEdit.type = evt.target.value;
@@ -218,6 +222,18 @@ export default class EventEditComponent extends AbstractSmartComponent {
 
       this.rerender();
     });
+
+    if (offersCheckbox) {
+      offersCheckbox.addEventListener(`click`, (evt) => {
+        const target = evt.target;
+        if (!target) {
+          return;
+        }
+
+        target.checked = !target.checked;
+        this.rerender();
+      });
+    }
   }
 
   getData() {

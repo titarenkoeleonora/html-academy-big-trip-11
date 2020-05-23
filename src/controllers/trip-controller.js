@@ -58,6 +58,16 @@ export default class TripController {
     this._pointsModel.setFilterChangeHandler(this._filterChangeHandler);
   }
 
+  hide() {
+    this._daysComponent.hide();
+    this._sortComponent.hide();
+  }
+
+  show() {
+    this._daysComponent.show();
+    this._sortComponent.show();
+  }
+
   render() {
     const points = this._pointsModel.getPoints();
     render(tripMainElement, this._tripInfoComponent, RenderPosition.AFTERBEGIN);
@@ -157,12 +167,6 @@ export default class TripController {
     } else if (newData === null) {
       this._pointsModel.removePoint(oldData.id);
       this._updatePoints();
-    } else {
-      const isSuccess = this._pointsModel.updatePoint(oldData.id, newData);
-
-      if (isSuccess) {
-        pointController.render(newData, Mode.DEFAULT);
-      }
     }
   }
 
