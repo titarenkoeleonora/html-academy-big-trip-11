@@ -1,16 +1,14 @@
-import {CITIES, typeRoutePointMap, TypeRoutePointIndex, TripDescriptions, Mode} from "../constants";
+import {typeRoutePointMap, TypeRoutePointIndex, Mode} from "../constants";
 import {formatDate, formatTime} from "../utils/date-utils";
 import AbstractSmartComponent from "./abstract-smart-component";
-import {getRandomInteger} from "../utils/common";
-import {descriptionsCount} from "./mock/route-point";
+// import {getRandomInteger} from "../utils/common";
 import flatpickr from "flatpickr";
 
 import "flatpickr/dist/flatpickr.min.css";
-import {encode} from "he";
 
 const createOptionsMarkup = (cities) => cities.map((city) => {
   return (
-    `<option value="${city}"></option>`
+    `<option value="${city.name}"></option>`
   );
 }).join(`\n`);
 
@@ -25,7 +23,7 @@ const createTypeMarkup = (types) => types.map((type) => {
 
 const createPhotosMarkup = (photos) => photos.map((photo) => {
   return (
-    `<img class="event__photo" src="${photo}" alt="Event photo">`
+    `<img class="event__photo" src="${photo.src}" alt="${photo.description}">`
   );
 }).join(`\n`);
 
@@ -84,9 +82,9 @@ const createEdidtngMarkup = (isFavorite, offersMarkup, destination, photosMarkup
   );
 };
 
-const createEventEditTemplate = (tripPoint, mode) => {
-  const {type, dateFrom, dateTo, destination, offers, basePrice, isFavorite} = tripPoint;
-
+const createEventEditTemplate = (tripPoint, mode, options = {}) => {
+  const {dateFrom, dateTo, basePrice, isFavorite} = tripPoint;
+  const {type, offers, destination, allDestinations} = options;
   const tripPointTypesTo = (Object.keys(typeRoutePointMap).slice(TypeRoutePointIndex.MIN_ACTIONS_INDEX, TypeRoutePointIndex.MAX_ACTIONS_INDEX));
   const tripPointTypesIn = (Object.keys(typeRoutePointMap).slice(TypeRoutePointIndex.MAX_ACTIONS_INDEX, TypeRoutePointIndex.MAX_ACTIVITY_INDEX));
 
@@ -94,7 +92,8 @@ const createEventEditTemplate = (tripPoint, mode) => {
   const typeActivityMarkup = createTypeMarkup(tripPointTypesIn);
   const photosMarkup = destination.pictures ? createPhotosMarkup(destination.pictures) : ``;
   const offersMarkup = offers ? createOfferMarkup(offers) : ``;
-  const optionMarkup = createOptionsMarkup(CITIES);
+  const optionMarkup = createOptionsMarkup(allDestinations);
+
 
   const resetButtonMode = (mode === Mode.ADDING ? `Cancel` : `Delete`);
   const edidtngMarkup = (mode === Mode.ADDING ? `` : createEdidtngMarkup(isFavorite, offersMarkup, destination, photosMarkup));
@@ -124,7 +123,7 @@ const createEventEditTemplate = (tripPoint, mode) => {
 
       <div class="event__field-group  event__field-group--destination">
         <label class="event__label  event__type-output" for="event-destination-1">
-        ${type} ${typeRoutePointMap[type]}
+        ${typeRoutePointMap[type]}
         </label>
         <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination.name}" list="destination-list-1">
         <datalist id="destination-list-1">
@@ -160,7 +159,7 @@ const createEventEditTemplate = (tripPoint, mode) => {
 };
 
 export default class EventEditComponent extends AbstractSmartComponent {
-  constructor(eventEdit, mode) {
+  constructor(eventEdit, mode, offers, destinations) {
     super();
 
     this._eventEdit = eventEdit;
@@ -169,15 +168,21 @@ export default class EventEditComponent extends AbstractSmartComponent {
     this._resetButtonClickHandler = null;
     this._mode = mode;
 
+    this._allOffers = offers;
+    this._allDestinations = destinations;
     this._offers = [...document.querySelectorAll(`.event__offer-checkbox`)];
 
-    this._parseFormData = this._parseFormData.bind(this);
     this._applyFlatpickr();
     this._subscribeOnEvents();
   }
 
   getTemplate() {
-    return createEventEditTemplate(this._eventEdit, this._mode);
+    return createEventEditTemplate(this._eventEdit, this._mode, {
+      type: this._eventEdit.type,
+      offers: this._eventEdit.offers,
+      destination: this._eventEdit.destination,
+      allDestinations: this._allDestinations,
+    });
   }
 
   removeElement() {
@@ -205,77 +210,25 @@ export default class EventEditComponent extends AbstractSmartComponent {
     this._applyFlatpickr();
   }
 
-  _subscribeOnEvents() {
-    const element = this.getElement();
-    const offersCheckbox = document.querySelector(`.event__offer-checkbox`);
-
-    element.querySelector(`.event__type-list`).addEventListener(`change`, (evt) => {
-      this._eventEdit.type = evt.target.value;
-      this.rerender();
-    });
-
-    element.querySelector(`.event__input--destination`).addEventListener(`change`, (evt) => {
-      evt.preventDefault();
-
-      this._eventDestination.name = evt.target.value;
-      this._eventDestination.description = TripDescriptions.slice(0, getRandomInteger(descriptionsCount.MAX, descriptionsCount.MIN)).join(` `);
-
-      this.rerender();
-    });
-
-    if (offersCheckbox) {
-      offersCheckbox.addEventListener(`click`, (evt) => {
-        const target = evt.target;
-        if (!target) {
-          return;
-        }
-
-        target.checked = !target.checked;
-        this.rerender();
-      });
-    }
-  }
 
   getData() {
-    const form = this.getElement();
-    const formData = new FormData(form);
+    const id = this._eventEdit.id;
+    const type = this._eventEdit.type;
+    const dateFrom = this._eventEdit.dateFrom;
+    const dateTo = this._eventEdit.dateTo;
 
-    return this._parseFormData(formData);
-  }
-
-  _parseFormData(formData) {
-    let description = null;
-    let pictures = null;
-    let offers = null;
-    const start = this._eventEdit.dateFrom;
-    const end = this._eventEdit.dateTo;
-    if (this._mode !== Mode.ADDING) {
-      description = document.querySelector(`.event__destination-description`).textContent;
-      pictures = [...document.querySelectorAll(`.event__photo`)];
-      offers = [...document.querySelectorAll(`.event__offer-selector`)];
-
-      pictures = pictures.map((photo) => photo.src);
-      offers = offers.map((offer) => {
-        return {
-          title: offer.querySelector(`.event__offer-title`).textContent,
-          price: offer.querySelector(`.event__offer-price`).textContent
-        };
-      });
-    }
-
-    return {
-      id: String(new Date() + Math.random()),
-      type: this._eventEdit.type,
-      dateFrom: start ? start : null,
-      dateTo: end ? end : null,
-      destination: {
-        name: encode(formData.get(`event-destination`)),
-        description,
-        pictures,
-      },
-      basePrice: parseInt(encode(formData.get(`event-price`)), 10),
-      offers,
+    this._eventEdit = {
+      id,
+      type,
+      dateFrom,
+      dateTo,
+      destination: this._eventEdit.destination,
+      basePrice: this._eventEdit.basePrice,
+      offers: this._eventEdit.offers,
+      isFavorite: this._mode === Mode.EDIT ? this._eventEdit.isFavorite : false,
     };
+
+    return this._eventEdit;
   }
 
   setSaveButtonHandler(handler) {
@@ -328,5 +281,51 @@ export default class EventEditComponent extends AbstractSmartComponent {
       altFormat: `d/m/y H:i`,
       defaultDate: this._eventEdit.dateTo || ``,
     });
+  }
+
+  _onDestinationChange(evt) {
+    evt.preventDefault();
+
+    const currentCity = evt.target.value;
+    const index = this._allDestinations.map((destination) => destination.name).indexOf(currentCity);
+
+    if (index === -1) {
+      return;
+    }
+
+    this._eventDestination = this._allDestinations[index];
+
+    this.rerender();
+  }
+
+  _subscribeOnEvents() {
+    const element = this.getElement();
+    const offersCheckbox = document.querySelector(`.event__offer-checkbox`);
+
+    element.querySelector(`.event__type-list`).addEventListener(`change`, (evt) => {
+      this._eventEdit.type = evt.target.value;
+      this.rerender();
+    });
+
+    element.querySelector(`.event__input--destination`).addEventListener(`change`, (evt) => {
+      evt.preventDefault();
+
+      this._eventDestination.name = evt.target.value;
+      // this._eventDestination.description = tripDescriptions.slice(0, getRandomInteger(descriptionsCount.MAX, descriptionsCount.MIN)).join(` `);
+
+      this.rerender();
+    });
+
+    if (offersCheckbox) {
+      offersCheckbox.addEventListener(`click`, (evt) => {
+        const target = evt.target;
+        if (!target) {
+          return;
+        }
+
+        target.checked = !target.checked;
+        this.rerender();
+      });
+    }
   }
 }
