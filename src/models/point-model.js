@@ -9,26 +9,20 @@ export default class PointModel {
     this.destination = data[`destination`];
     this.basePrice = data[`base_price`];
     this.isFavorite = Boolean(data[`is_favorite`]);
-    this.offers = data[`offers`] || [];
+    this.checkedOffers = data[`offers`] || [];
   }
 
   toRAW(data) {
-    console.log(data);
     return {
       'id': data.id,
       'type': data.type,
       'date_from': moment.parseZone(data.dateFrom).utc().format(),
       'date_to': moment.parseZone(data.dateTo).utc().format(),
       'destination': data.destination,
-      'offers': data.offers,
+      'offers': data.checkedOffers,
       'base_price': data.basePrice,
       'is_favorite': data.isFavorite,
     };
-  }
-
-  static clone(data) {
-    console.log(data);
-    return new PointModel(this.toRAW(data));
   }
 
   static parsePoint(data) {

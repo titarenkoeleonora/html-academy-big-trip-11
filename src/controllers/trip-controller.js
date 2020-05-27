@@ -4,12 +4,9 @@ import DaysComponent from "../components/trip-days";
 import {getAllDates, getUniqueDates} from "../utils/date-utils";
 import NoPointsComponent from "../components/no-points";
 import SortComponent, {SortType} from "../components/sort";
-import RouteComponent from "../components/route";
+
 import DayComponent from "../components/day";
 import EventsListComponent from "../components/events-list";
-import {tripMainElement} from "../main";
-import TripInfoComponent from "../components/trip-info";
-import CostComponent from "../components/cost";
 import PointController, {EmptyPoint} from "./point-controller";
 
 const getSortedPoints = (points, sortType) => {
@@ -41,12 +38,9 @@ export default class TripController {
     this._pointControllers = [];
     this._datesArray = [];
 
-    this._tripInfoComponent = new TripInfoComponent();
-    this._costComponent = new CostComponent();
     this._daysComponent = new DaysComponent();
     this._dayComponent = new DayComponent();
     this._noPointsComponent = new NoPointsComponent();
-    this._routeComponent = new RouteComponent();
     this._sortComponent = new SortComponent();
     this._eventsListComponent = new EventsListComponent();
 
@@ -72,8 +66,6 @@ export default class TripController {
 
   render() {
     const points = this._pointsModel.getPoints();
-    render(tripMainElement, this._tripInfoComponent, RenderPosition.AFTERBEGIN);
-    render(this._tripInfoComponent.getElement(), this._costComponent);
     render(this._container, this._daysComponent);
 
     if (points.length === 0) {
@@ -104,7 +96,6 @@ export default class TripController {
   }
 
   _renderTripDays(points) {
-    render(this._tripInfoComponent.getElement(), this._routeComponent, RenderPosition.AFTERBEGIN);
     render(this._container, this._sortComponent, RenderPosition.AFTERBEGIN);
     this._sortComponent.setSortTypeHandler(this._sortTypeChangeHandler);
     getAllDates(points, this._datesArray);
@@ -164,7 +155,7 @@ export default class TripController {
     this._renderTripDays(this._pointsModel.getPoints());
   }
 
-  _dataChangeHandler(pointController, oldData, newData) {
+  _dataChangeHandler(pointController, oldData, newData, favoriteChecked = false) {
     if (oldData === EmptyPoint) {
       this._creatingPoint = null;
       if (newData === null) {
@@ -183,8 +174,12 @@ export default class TripController {
           const isSuccess = this._pointsModel.updatePoint(oldData.id, pointModel);
 
           if (isSuccess) {
-            pointController.render(pointModel, Mode.DEFAULT);
-            this._updatePoints();
+            if (favoriteChecked) {
+              pointController.render(pointModel, Mode.EDIT);
+            } else {
+              pointController.render(pointModel, Mode.DEFAULT);
+              this._updatePoints();
+            }
           }
         });
     }

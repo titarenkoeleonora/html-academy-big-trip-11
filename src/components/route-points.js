@@ -4,19 +4,21 @@ import {getTimeDifference, formatTime} from "../utils/date-utils";
 
 const createOffersMarkup = (offers) => offers.slice(0, MAX_SHOWED_OFFERS_COUNT).map((offer) => {
   return (
-    `<li class="event__offer">
-    <span class="event__offer-title">${offer.title}</span>
-    &plus;
-    &euro;&nbsp;<span class="event__offer-price">${offer.price}</span>
-  </li>`
+    `<h4 class="visually-hidden">Offers:</h4>
+      <ul class="event__selected-offers">
+      <li class="event__offer">
+      <span class="event__offer-title">${offer.title}</span>
+      &plus;
+      &euro;&nbsp;<span class="event__offer-price">${offer.price}</span>
+    </li>
+    </ul`
   );
 }).join(`\n`);
 
 const createRoutePointsTemplate = (tripPoint) => {
   const {type, dateFrom, dateTo, destination, basePrice, offers} = tripPoint;
-  const checkedOffers = null;
 
-  const offersMarkup = checkedOffers ? createOffersMarkup(offers) : ``;
+  const offersMarkup = offers ? createOffersMarkup(offers) : ``;
   return (
     `<li class="trip-events__item">
       <div class="event">
@@ -38,10 +40,7 @@ const createRoutePointsTemplate = (tripPoint) => {
           &euro;&nbsp;<span class="event__price-value">${basePrice}</span>
         </p>
 
-        <h4 class="visually-hidden">Offers:</h4>
-        <ul class="event__selected-offers">
           ${offersMarkup}
-        </ul>
 
         <button class="event__rollup-btn" type="button">
           <span class="visually-hidden">Open event</span>

@@ -2,14 +2,8 @@ import RoutePointsComponent from "../components/route-points";
 import EventEditComponent from "../components/event-edit";
 import {replace, render, remove} from "../utils/render";
 import {Key, Mode, RenderPosition} from "../constants";
-// import {encode} from "he";
 import PointModel from "../models/point-model";
 
-// export const getOffersByType = (offers, type) => {
-//   const index = offers.findIndex((offer) => offer.type === type);
-
-//   return offers[index].offers;
-// };
 
 export const EmptyPoint = {
   id: ``,
@@ -25,44 +19,6 @@ export const EmptyPoint = {
   isFavorite: false,
   offers: [],
 };
-
-// const parseFormData = (formData, id, destinations, offers) => {
-//   const type = formData.get(`event-type`);
-//   const city = encode(formData.get(`event-destination`));
-//   const dateFrom = formData.get(`event-start-time`);
-//   const dateTo = formData.get(`event-end-time`);
-//   const pointOffers = formData.getAll(`event-offer`);
-//   const isFavorite = formData.get(`event-favorite`);
-
-//   const destination = destinations.find((item) => {
-//     return city === item.name;
-//   });
-
-//   console.log(type, pointOffers);
-
-//   const offersByType = getOffersByType(offers, type);
-//   const checkedOffers = offersByType.filter((offer) => pointOffers.includes(offer.title));
-
-//   return new PointModel({
-//     id,
-//     type,
-//     'date_from': dateFrom ? new Date(dateFrom) : null,
-//     'date_to': dateTo ? new Date(dateTo) : null,
-//     'base_price': parseInt(encode(formData.get(`event-price`)), 10),
-//     'destination': {
-//       'name': destination.name,
-//       'description': destination.description,
-//       'pictures': destination.pictures.map((picture) => {
-//         return {
-//           src: picture.src,
-//           description: picture.description,
-//         };
-//       })
-//     },
-//     'offers': checkedOffers,
-//     'is_favorite': isFavorite,
-//   });
-// };
 
 export default class PointController {
   constructor(container, dataChangeHandler, viewChangeHandler, destinations, offers) {
@@ -115,6 +71,14 @@ export default class PointController {
         }
         break;
       case Mode.ADDING:
+        if (oldEventEditComponent && oldRoutePointComponent) {
+          remove(oldRoutePointComponent);
+          remove(oldEventEditComponent);
+        }
+        document.addEventListener(`keydown`, this._ecsKeyDownClickHandler);
+        render(this._container, this._eventEditComponent, RenderPosition.AFTERBEGIN);
+        break;
+      case Mode.EDIT:
         if (oldEventEditComponent && oldRoutePointComponent) {
           remove(oldRoutePointComponent);
           remove(oldEventEditComponent);
@@ -181,10 +145,11 @@ export default class PointController {
     const updatedPoint = Object.assign({}, this._point, {
       isFavorite: !this._point.isFavorite
     });
-
     const data = this._parseData(updatedPoint);
 
-    this._dataChangeHandler(this, this._point, data);
+    const favoriteChecked = true;
+
+    this._dataChangeHandler(this, this._point, data, favoriteChecked);
   }
 
   _ecsKeyDownClickHandler(evt) {

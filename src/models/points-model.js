@@ -4,8 +4,7 @@ import {getPointsByFilter} from "../utils/filter";
 export default class PointsModel {
   constructor() {
     this._points = [];
-    this._offers = [];
-    this._destinations = [];
+
     this._activeFilterType = FilterType.EVERYTHING;
 
     this._dataChangeHandler = [];

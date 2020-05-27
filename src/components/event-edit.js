@@ -6,6 +6,8 @@ import flatpickr from "flatpickr";
 
 import "flatpickr/dist/flatpickr.min.css";
 import {getCapitalizedString} from "../utils/common";
+import {encode} from "he";
+import moment from 'moment';
 
 const createOptionsMarkup = (cities) => cities.map((city) => {
   return (
@@ -28,11 +30,11 @@ const createPhotosMarkup = (photos) => photos.map((photo) => {
   );
 }).join(`\n`);
 
-const createOfferMarkup = (offers) => offers.map((offer, index) => {
+const createOfferMarkup = (offersByType, checkedOffers) => offersByType.map((offer, index) => {
 
   return (
     `<div class="event__offer-selector">
-    <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-${index + 1}" type="checkbox" name="event-offer-luggage" ${offer.checked ? `checked` : ``}>
+    <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-${index + 1}" type="checkbox" name="event-offer-luggage" data-offer-id="${index + 1}" ${checkedOffers[index] ? `checked` : ``}>
     <label class="event__offer-label" for="event-offer-luggage-${index + 1}">
       <span class="event__offer-title">${offer.title}</span>
       &plus;
@@ -43,7 +45,6 @@ const createOfferMarkup = (offers) => offers.map((offer, index) => {
 }).join(`\n`);
 
 const createEdidtngMarkup = (isFavorite, offersMarkup, destination, photosMarkup) => {
-
   return (
     `<input id="event-favorite-1" class="event__favorite-checkbox  visually-hidden" type="checkbox" name="event-favorite" ${isFavorite ? `checked` : ``}>
       <label class="event__favorite-btn" for="event-favorite-1">
@@ -86,14 +87,14 @@ const createEdidtngMarkup = (isFavorite, offersMarkup, destination, photosMarkup
 
 const createEventEditTemplate = (tripPoint, mode, options = {}) => {
   const {dateFrom, dateTo, basePrice, isFavorite} = tripPoint;
-  const {type, offers, destination, allDestinations} = options;
+  const {type, offersByType, checkedOffers, destination, allDestinations} = options;
   const tripPointTypesTo = (Object.keys(typeRoutePointMap).slice(TypeRoutePointIndex.MIN_ACTIONS_INDEX, TypeRoutePointIndex.MAX_ACTIONS_INDEX));
   const tripPointTypesIn = (Object.keys(typeRoutePointMap).slice(TypeRoutePointIndex.MAX_ACTIONS_INDEX, TypeRoutePointIndex.MAX_ACTIVITY_INDEX));
 
   const typeTransferMarkup = createTypeMarkup(tripPointTypesTo);
   const typeActivityMarkup = createTypeMarkup(tripPointTypesIn);
   const photosMarkup = destination.pictures ? createPhotosMarkup(destination.pictures) : ``;
-  const offersMarkup = offers ? createOfferMarkup(offers) : ``;
+  const offersMarkup = offersByType ? createOfferMarkup(offersByType, checkedOffers) : ``;
   const optionMarkup = createOptionsMarkup(allDestinations);
 
 
@@ -180,10 +181,12 @@ export default class EventEditComponent extends AbstractSmartComponent {
   }
 
   getTemplate() {
+    this._offersByType = this._getOffersByType(this._allOffers, this._eventEdit.type);
 
     return createEventEditTemplate(this._eventEdit, this._mode, {
       type: this._eventEdit.type,
-      offers: this._offersByType,
+      offersByType: this._offersByType,
+      checkedOffers: this._eventEdit.checkedOffers,
       destination: this._eventEdit.destination,
       allDestinations: this._allDestinations,
     });
@@ -218,8 +221,8 @@ export default class EventEditComponent extends AbstractSmartComponent {
   getData() {
     const id = this._eventEdit.id;
     const type = this._eventEdit.type;
-    const dateFrom = this._eventEdit.dateFrom;
-    const dateTo = this._eventEdit.dateTo;
+    const dateFrom = new Date(moment(this._eventEdit.dateFrom, `DD/MM/YY HH:mm`).format());
+    const dateTo = new Date(moment(this._eventEdit.dateTo, `DD/MM/YY HH:mm`).format());
 
     this._eventEdit = {
       id,
@@ -227,8 +230,8 @@ export default class EventEditComponent extends AbstractSmartComponent {
       dateFrom,
       dateTo,
       destination: this._eventEdit.destination,
-      basePrice: this._eventEdit.basePrice,
-      offers: this._eventEdit.offers,
+      basePrice: parseInt(this._eventEdit.basePrice, 10),
+      checkedOffers: this._eventEdit.checkedOffers,
       isFavorite: this._mode === Mode.EDIT ? this._eventEdit.isFavorite : false,
     };
 
@@ -276,35 +279,32 @@ export default class EventEditComponent extends AbstractSmartComponent {
 
     this._flatpickr = flatpickr(startTime, {
       altInput: true,
+      dateFormat: `d/m/y H:i`,
       altFormat: `d/m/y H:i`,
       defaultDate: this._eventEdit.dateFrom || ``,
+      minDate: this._eventEdit.dateFrom,
+      [`time_24hr`]: true,
+      enableTime: true,
     });
 
     this._flatpickr = flatpickr(endTime, {
       altInput: true,
+      dateFormat: `d/m/y H:i`,
       altFormat: `d/m/y H:i`,
       defaultDate: this._eventEdit.dateTo || ``,
+      minDate: this._eventEdit.dateFrom,
+      [`time_24hr`]: true,
+      enableTime: true,
     });
-  }
-
-  _onDestinationChange(evt) {
-    evt.preventDefault();
-
-    const currentCity = evt.target.value;
-    const index = this._allDestinations.map((destination) => destination.name).indexOf(currentCity);
-
-    if (index === -1) {
-      return;
-    }
-
-    this._eventDestination = this._allDestinations[index];
-
-    this.rerender();
   }
 
   _subscribeOnEvents() {
     const element = this.getElement();
-    const offersCheckbox = document.querySelector(`.event__offer-checkbox`);
+    const offersCheckbox = element.querySelector(`.event__available-offers`);
+    const destinationElement = element.querySelector(`.event__input--destination`);
+    const priceElement = element.querySelector(`.event__input--price`);
+    const startTimeElement = element.querySelector(`[name="event-start-time"]`);
+    const endTimeElement = element.querySelector(`[name="event-end-time"]`);
 
     element.querySelector(`.event__type-list`).addEventListener(`change`, (evt) => {
       this._eventEdit.type = evt.target.value;
@@ -313,10 +313,8 @@ export default class EventEditComponent extends AbstractSmartComponent {
       this.rerender();
     });
 
-    element.querySelector(`.event__input--destination`).addEventListener(`change`, (evt) => {
-      evt.preventDefault();
-
-      this._eventDestination.name = evt.target.value;
+    destinationElement.addEventListener(`change`, () => {
+      this._eventDestination.name = destinationElement.value;
 
       const index = this._allDestinations.map((destination) => destination.name).indexOf(this._eventDestination.name);
 
@@ -324,20 +322,33 @@ export default class EventEditComponent extends AbstractSmartComponent {
         return;
       }
 
-      this._eventDestination = this._allDestinations[index];
+      this._eventEdit.destination = this._allDestinations[index];
+      this.rerender();
+    });
 
+    startTimeElement.addEventListener(`change`, () => {
+      this._eventEdit.dateFrom = encode(startTimeElement.value);
+    });
+
+    endTimeElement.addEventListener(`change`, () => {
+      this._eventEdit.dateTo = encode(endTimeElement.value);
+    });
+
+    priceElement.addEventListener(`input`, () => {
+      this._eventEdit.basePrice = priceElement.value;
       this.rerender();
     });
 
     if (offersCheckbox) {
       offersCheckbox.addEventListener(`click`, (evt) => {
-        const target = evt.target;
-        if (!target) {
-          return;
+        const index = evt.target.dataset.offerId;
+        if (evt.target.tagName === `INPUT` && evt.target.checked) {
+          const checkedOffer = this._offersByType[index];
+          this._eventEdit.checkedOffers.push(checkedOffer);
+        } else {
+          const checkedOffer = this._offersByType[index];
+          this._eventEdit.checkedOffers = this._eventEdit.checkedOffers.filter((activeOffer) => activeOffer !== checkedOffer);
         }
-
-        target.checked = !target.checked;
-        this.rerender();
       });
     }
   }
