@@ -1,7 +1,12 @@
 import PointModel from "./models/point-model";
 
+const StatusCode = {
+  SUCCESS: 200,
+  REDIRECT: 300,
+};
+
 const checkStatus = (response) => {
-  if (response.status >= 200 && response.status < 300) {
+  if (response.status >= StatusCode.SUCCESS && response.status < StatusCode.REDIRECT) {
     return response;
   } else {
     throw new Error(`${response.status}: ${response.statusText}`);
