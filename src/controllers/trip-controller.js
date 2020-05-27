@@ -4,7 +4,6 @@ import DaysComponent from "../components/trip-days";
 import {getAllDates, getUniqueDates} from "../utils/date-utils";
 import NoPointsComponent from "../components/no-points";
 import SortComponent, {SortType} from "../components/sort";
-
 import DayComponent from "../components/day";
 import EventsListComponent from "../components/events-list";
 import PointController, {EmptyPoint} from "./point-controller";

@@ -46,8 +46,8 @@ export default class PointController {
     this._point = point;
     this._mode = mode;
 
-    this._routePointComponent = new RoutePointsComponent(point);
-    this._eventEditComponent = new EventEditComponent(point, mode, this._offers, this._destinations);
+    this._routePointComponent = new RoutePointsComponent(this._point);
+    this._eventEditComponent = new EventEditComponent(this._point, mode, this._offers, this._destinations);
 
     this._routePointComponent.setClickHandler(this._rollupButtonClickHandler);
     this._eventEditComponent.setSaveButtonHandler(this._submitButtonClickHandler);

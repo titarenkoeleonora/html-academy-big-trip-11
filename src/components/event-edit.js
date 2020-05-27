@@ -1,7 +1,6 @@
 import {typeRoutePointMap, TypeRoutePointIndex, Mode} from "../constants";
 import {formatDate, formatTime} from "../utils/date-utils";
 import AbstractSmartComponent from "./abstract-smart-component";
-// import {getRandomInteger} from "../utils/common";
 import flatpickr from "flatpickr";
 
 import "flatpickr/dist/flatpickr.min.css";

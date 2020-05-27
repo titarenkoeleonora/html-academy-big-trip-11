@@ -4,21 +4,18 @@ import {getTimeDifference, formatTime} from "../utils/date-utils";
 
 const createOffersMarkup = (offers) => offers.slice(0, MAX_SHOWED_OFFERS_COUNT).map((offer) => {
   return (
-    `<h4 class="visually-hidden">Offers:</h4>
-      <ul class="event__selected-offers">
-      <li class="event__offer">
-      <span class="event__offer-title">${offer.title}</span>
-      &plus;
-      &euro;&nbsp;<span class="event__offer-price">${offer.price}</span>
-    </li>
-    </ul`
+    `<li class="event__offer">
+        <span class="event__offer-title">${offer.title}</span>
+        &plus;
+        &euro;&nbsp;<span class="event__offer-price">${offer.price}</span>
+      </li>`
   );
 }).join(`\n`);
 
 const createRoutePointsTemplate = (tripPoint) => {
-  const {type, dateFrom, dateTo, destination, basePrice, offers} = tripPoint;
+  const {type, dateFrom, dateTo, destination, basePrice, checkedOffers} = tripPoint;
 
-  const offersMarkup = offers ? createOffersMarkup(offers) : ``;
+  const offersMarkup = checkedOffers.length > 0 ? createOffersMarkup(checkedOffers) : ``;
   return (
     `<li class="trip-events__item">
       <div class="event">
@@ -40,7 +37,10 @@ const createRoutePointsTemplate = (tripPoint) => {
           &euro;&nbsp;<span class="event__price-value">${basePrice}</span>
         </p>
 
+        <h4 class="visually-hidden">Offers:</h4>
+        <ul class="event__selected-offers">
           ${offersMarkup}
+        </ul>
 
         <button class="event__rollup-btn" type="button">
           <span class="visually-hidden">Open event</span>
@@ -51,17 +51,19 @@ const createRoutePointsTemplate = (tripPoint) => {
 };
 
 export default class RoutePointsComponent extends AbstractComponent {
-  constructor(points) {
+  constructor(point) {
     super();
 
-    this._points = points;
+    this._point = point;
   }
 
   getTemplate() {
-    return createRoutePointsTemplate(this._points);
+    return createRoutePointsTemplate(this._point);
   }
 
   setClickHandler(handler) {
-    this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, handler);
+    if (this.getElement().querySelector(`.event__rollup-btn`)) {
+      this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, handler);
+    }
   }
 }
