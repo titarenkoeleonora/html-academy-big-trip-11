@@ -13,6 +13,7 @@ export default class PointModel {
   }
 
   toRAW(data) {
+    console.log(data);
     return {
       'id': data.id,
       'type': data.type,
@@ -26,7 +27,8 @@ export default class PointModel {
   }
 
   static clone(data) {
-    return new PointModel(data.toRAW());
+    console.log(data);
+    return new PointModel(this.toRAW(data));
   }
 
   static parsePoint(data) {

@@ -15,6 +15,19 @@ export const getEndDate = (date) => {
   targetDate.setMinutes(targetDate.getMinutes() + getRandomInteger(Time.MINUTES_IN_HOUR));
   return targetDate;
 };
+const createNullInDate = (value) => {
+  let string = ``;
+
+  if (value < 10) {
+    string = `0` + value;
+  }
+
+  if (value >= 10) {
+    string = value;
+  }
+
+  return string;
+};
 
 export const getTimeDifference = (start, end) => {
   const differenceInMS = end.getTime() - start.getTime();
@@ -22,9 +35,9 @@ export const getTimeDifference = (start, end) => {
   const differenceHours = Math.round((differenceInMS % Time.MS_IN_DAY) / Time.MS_IN_HOUR);
   const differenceMinutes = Math.round(((differenceInMS % Time.MS_IN_DAY) % Time.MS_IN_HOUR) / Time.MS_IN_MINUTE);
 
-  const day = differenceDays > 0 ? differenceDays + `D` : ``;
-  const hours = differenceHours > 0 ? differenceHours + `H ` : ``;
-  const minutes = differenceMinutes > 0 ? differenceMinutes + `M ` : ``;
+  const day = differenceDays > 0 ? createNullInDate(differenceDays) + `D` : ``;
+  const hours = differenceHours > 0 ? createNullInDate(differenceHours) + `H ` : ``;
+  const minutes = differenceMinutes > 0 ? createNullInDate(differenceMinutes) + `M ` : ``;
 
   return `${day} ${hours} ${minutes}`;
 };

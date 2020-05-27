@@ -178,10 +178,13 @@ export default class PointController {
   }
 
   _favoritesButtonClickHandler() {
-    const newPoint = PointModel.clone(this._point);
-    newPoint.isFavorite = !newPoint.isFavorite;
+    const updatedPoint = Object.assign({}, this._point, {
+      isFavorite: !this._point.isFavorite
+    });
 
-    this._dataChangeHandler(this, this._point, newPoint);
+    const data = this._parseData(updatedPoint);
+
+    this._dataChangeHandler(this, this._point, data);
   }
 
   _ecsKeyDownClickHandler(evt) {

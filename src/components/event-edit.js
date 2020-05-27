@@ -5,6 +5,7 @@ import AbstractSmartComponent from "./abstract-smart-component";
 import flatpickr from "flatpickr";
 
 import "flatpickr/dist/flatpickr.min.css";
+import {getCapitalizedString} from "../utils/common";
 
 const createOptionsMarkup = (cities) => cities.map((city) => {
   return (
@@ -16,7 +17,7 @@ const createTypeMarkup = (types) => types.map((type) => {
   return (
     `<div class="event__type-item">
       <input id="event-type-${type.toLowerCase()}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${type}">
-      <label class="event__type-label  event__type-label--${type.toLowerCase()}" for="event-type-${type.toLowerCase()}-1">${type}</label>
+      <label class="event__type-label  event__type-label--${type.toLowerCase()}" for="event-type-${type.toLowerCase()}-1">${getCapitalizedString(type)}</label>
     </div>`
   );
 }).join(`\n`);
@@ -42,6 +43,7 @@ const createOfferMarkup = (offers) => offers.map((offer, index) => {
 }).join(`\n`);
 
 const createEdidtngMarkup = (isFavorite, offersMarkup, destination, photosMarkup) => {
+
   return (
     `<input id="event-favorite-1" class="event__favorite-checkbox  visually-hidden" type="checkbox" name="event-favorite" ${isFavorite ? `checked` : ``}>
       <label class="event__favorite-btn" for="event-favorite-1">
@@ -174,12 +176,14 @@ export default class EventEditComponent extends AbstractSmartComponent {
 
     this._applyFlatpickr();
     this._subscribeOnEvents();
+
   }
 
   getTemplate() {
+
     return createEventEditTemplate(this._eventEdit, this._mode, {
       type: this._eventEdit.type,
-      offers: this._eventEdit.offers,
+      offers: this._offersByType,
       destination: this._eventEdit.destination,
       allDestinations: this._allDestinations,
     });
@@ -304,6 +308,8 @@ export default class EventEditComponent extends AbstractSmartComponent {
 
     element.querySelector(`.event__type-list`).addEventListener(`change`, (evt) => {
       this._eventEdit.type = evt.target.value;
+      this._offersByType = this._getOffersByType(this._allOffers, this._eventEdit.type);
+
       this.rerender();
     });
 
@@ -311,7 +317,14 @@ export default class EventEditComponent extends AbstractSmartComponent {
       evt.preventDefault();
 
       this._eventDestination.name = evt.target.value;
-      // this._eventDestination.description = tripDescriptions.slice(0, getRandomInteger(descriptionsCount.MAX, descriptionsCount.MIN)).join(` `);
+
+      const index = this._allDestinations.map((destination) => destination.name).indexOf(this._eventDestination.name);
+
+      if (index === -1) {
+        return;
+      }
+
+      this._eventDestination = this._allDestinations[index];
 
       this.rerender();
     });
@@ -327,5 +340,11 @@ export default class EventEditComponent extends AbstractSmartComponent {
         this.rerender();
       });
     }
+  }
+
+  _getOffersByType(offers, type) {
+    const index = offers.findIndex((offer) => offer.type === type.toLowerCase());
+
+    return offers[index].offers;
   }
 }
