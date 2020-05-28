@@ -8,6 +8,18 @@ import {getCapitalizedString} from "../utils/common";
 import {encode} from "he";
 import moment from 'moment';
 
+const isOfferChecked = (offer, checkedOffers) => {
+  let isChecked = false;
+
+  checkedOffers.forEach((checkedOffer) => {
+    if (offer.title === checkedOffer.title) {
+      isChecked = true;
+    }
+  });
+
+  return isChecked;
+};
+
 const createOptionsMarkup = (cities) => cities.map((city) => {
   return (
     `<option value="${city.name}"></option>`
@@ -30,11 +42,12 @@ const createPhotosMarkup = (photos) => photos.map((photo) => {
 }).join(`\n`);
 
 const createOfferMarkup = (offersByType, checkedOffers) => offersByType.map((offer, index) => {
+  const isChecked = isOfferChecked(offer, checkedOffers);
 
   return (
     `<div class="event__offer-selector">
-    <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-${index + 1}" type="checkbox" name="event-offer-luggage" data-offer-id="${index + 1}" ${checkedOffers[index] ? `checked` : ``}>
-    <label class="event__offer-label" for="event-offer-luggage-${index + 1}">
+    <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer.title}-${index + 1}" type="checkbox" name="event-offer-${offer.title}" data-id="${index}" ${isChecked ? `checked` : ``}>
+    <label class="event__offer-label" for="event-offer-${offer.title}-${index + 1}">
       <span class="event__offer-title">${offer.title}</span>
       &plus;
       &euro;&nbsp;<span class="event__offer-price">${offer.price}</span>
@@ -176,7 +189,6 @@ export default class EventEditComponent extends AbstractSmartComponent {
 
     this._applyFlatpickr();
     this._subscribeOnEvents();
-
   }
 
   getTemplate() {
@@ -212,8 +224,8 @@ export default class EventEditComponent extends AbstractSmartComponent {
   }
 
   rerender() {
-    super.rerender();
     this._applyFlatpickr();
+    super.rerender();
   }
 
 
@@ -307,6 +319,7 @@ export default class EventEditComponent extends AbstractSmartComponent {
 
     element.querySelector(`.event__type-list`).addEventListener(`change`, (evt) => {
       this._eventEdit.type = evt.target.value;
+      this._eventEdit.checkedOffers = [];
       this._offersByType = this._getOffersByType(this._allOffers, this._eventEdit.type);
 
       this.rerender();
@@ -340,13 +353,15 @@ export default class EventEditComponent extends AbstractSmartComponent {
 
     if (offersCheckbox) {
       offersCheckbox.addEventListener(`click`, (evt) => {
-        const index = evt.target.dataset.offerId;
-        if (evt.target.tagName === `INPUT` && evt.target.checked) {
-          const checkedOffer = this._offersByType[index];
+        const index = evt.target.dataset.id;
+        const checkedOffer = this._offersByType[index];
+
+        if (evt.target.checked) {
           this._eventEdit.checkedOffers.push(checkedOffer);
         } else {
-          const checkedOffer = this._offersByType[index];
-          this._eventEdit.checkedOffers = this._eventEdit.checkedOffers.filter((activeOffer) => activeOffer !== checkedOffer);
+          if (checkedOffer) {
+            this._eventEdit.checkedOffers = this._eventEdit.checkedOffers.filter((item) => item.title !== checkedOffer.title);
+          }
         }
       });
     }
