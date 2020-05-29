@@ -4,10 +4,11 @@ import {replace, render, remove} from "../utils/render";
 import {Key, Mode, RenderPosition} from "../constants";
 import PointModel from "../models/point-model";
 
+const SHAKE_ANIMATION_TIMEOUT = 600;
 
 export const EmptyPoint = {
   id: ``,
-  type: `Taxi`,
+  type: `taxi`,
   dateFrom: new Date(),
   dateTo: new Date(),
   destination: {
@@ -46,7 +47,7 @@ export default class PointController {
     this._point = point;
     this._mode = mode;
 
-    this._routePointComponent = new RoutePointsComponent(this._point);
+    this._routePointComponent = new RoutePointsComponent(this._point, mode);
     this._eventEditComponent = new EventEditComponent(this._point, mode, this._offers, this._destinations);
 
     this._routePointComponent.setClickHandler(this._rollupButtonClickHandler);
@@ -59,7 +60,6 @@ export default class PointController {
     }
 
     this._eventEditComponent.setResetButtonHandler(() => this._dataChangeHandler(this, point, null));
-
     switch (mode) {
       case Mode.DEFAULT:
         if (oldEventEditComponent && oldRoutePointComponent) {
@@ -161,6 +161,16 @@ export default class PointController {
       this._replaceEditFormToPoint();
       document.removeEventListener(`keydown`, this._ecsKeyDownClickHandler);
     }
+  }
+
+  shake() {
+    this._eventEditComponent.getElement().style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;
+    this._routePointComponent.getElement().style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;
+
+    setTimeout(() => {
+      this._eventEditComponent.getElement().style.animation = ``;
+      this._routePointComponent.getElement().style.animation = ``;
+    }, SHAKE_ANIMATION_TIMEOUT);
   }
 
   _parseData(formData) {

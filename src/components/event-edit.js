@@ -106,9 +106,8 @@ const createEventEditTemplate = (tripPoint, mode, options = {}) => {
   const typeTransferMarkup = createTypeMarkup(tripPointTypesTo);
   const typeActivityMarkup = createTypeMarkup(tripPointTypesIn);
   const photosMarkup = destination.pictures ? createPhotosMarkup(destination.pictures) : ``;
-  const offersMarkup = offersByType ? createOfferMarkup(offersByType, checkedOffers) : ``;
+  const offersMarkup = offersByType && mode !== Mode.ADDING ? createOfferMarkup(offersByType, checkedOffers) : ``;
   const optionMarkup = createOptionsMarkup(allDestinations);
-
 
   const resetButtonMode = (mode === Mode.ADDING ? `Cancel` : `Delete`);
   const edidtngMarkup = (mode === Mode.ADDING ? `` : createEdidtngMarkup(isFavorite, offersMarkup, destination, photosMarkup));
@@ -186,17 +185,17 @@ export default class EventEditComponent extends AbstractSmartComponent {
     this._allOffers = offers;
     this._allDestinations = destinations;
     this._offers = [...document.querySelectorAll(`.event__offer-checkbox`)];
+    this._offersByType = this._getOffersByType(this._allOffers, this._eventEdit.type);
 
     this._applyFlatpickr();
     this._subscribeOnEvents();
   }
 
   getTemplate() {
-    this._offersByType = this._getOffersByType(this._allOffers, this._eventEdit.type);
 
     return createEventEditTemplate(this._eventEdit, this._mode, {
       type: this._eventEdit.type,
-      offersByType: this._offersByType,
+      offersByType: this._getOffersByType(this._allOffers, this._eventEdit.type),
       checkedOffers: this._eventEdit.checkedOffers,
       destination: this._eventEdit.destination,
       allDestinations: this._allDestinations,
@@ -220,6 +219,7 @@ export default class EventEditComponent extends AbstractSmartComponent {
       this.setFavoritesButtonClickHandler(this._favoriteButtonHandler);
     }
 
+    this._applyFlatpickr();
     this._subscribeOnEvents();
   }
 
@@ -353,6 +353,7 @@ export default class EventEditComponent extends AbstractSmartComponent {
 
     if (offersCheckbox) {
       offersCheckbox.addEventListener(`click`, (evt) => {
+        this._offersByType = this._getOffersByType(this._allOffers, this._eventEdit.type);
         const index = evt.target.dataset.id;
         const checkedOffer = this._offersByType[index];
 

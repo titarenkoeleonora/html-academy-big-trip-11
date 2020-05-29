@@ -51,6 +51,23 @@ const API = class {
     .then(PointModel.parsePoint);
   }
 
+  createPoint(point) {
+    return this._loadData({
+      url: `https://11.ecmascript.pages.academy/big-trip/points`,
+      method: `POST`,
+      body: JSON.stringify(point),
+    })
+      .then((response) => response.json())
+      .then(PointModel.parsePoint);
+  }
+
+  deletePoint(id) {
+    return this._loadData({
+      url: `https://11.ecmascript.pages.academy/big-trip/points/${id}`,
+      method: `DELETE`
+    });
+  }
+
   _loadData({url, method = `GET`, body = null, headers = new Headers()}) {
     headers.append(`Authorization`, this._authorization);
     headers.append(`Content-Type`, `application/json`);

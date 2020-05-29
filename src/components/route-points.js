@@ -1,4 +1,4 @@
-import {typeRoutePointMap, MAX_SHOWED_OFFERS_COUNT} from "../constants";
+import {typeRoutePointMap, MAX_SHOWED_OFFERS_COUNT, Mode} from "../constants";
 import AbstractComponent from "./abstract-component";
 import {getTimeDifference, formatTime} from "../utils/date-utils";
 
@@ -12,10 +12,10 @@ const createOffersMarkup = (offers) => offers.slice(0, MAX_SHOWED_OFFERS_COUNT).
   );
 }).join(`\n`);
 
-const createRoutePointsTemplate = (tripPoint) => {
+const createRoutePointsTemplate = (tripPoint, mode) => {
   const {type, dateFrom, dateTo, destination, basePrice, checkedOffers} = tripPoint;
 
-  const offersMarkup = checkedOffers.length > 0 ? createOffersMarkup(checkedOffers) : ``;
+  const offersMarkup = mode !== Mode.ADDING && checkedOffers.length > 0 ? createOffersMarkup(checkedOffers) : ``;
   return (
     `<li class="trip-events__item">
       <div class="event">
@@ -51,14 +51,15 @@ const createRoutePointsTemplate = (tripPoint) => {
 };
 
 export default class RoutePointsComponent extends AbstractComponent {
-  constructor(point) {
+  constructor(point, mode) {
     super();
 
     this._point = point;
+    this._mode = mode;
   }
 
   getTemplate() {
-    return createRoutePointsTemplate(this._point);
+    return createRoutePointsTemplate(this._point, this._mode);
   }
 
   setClickHandler(handler) {
