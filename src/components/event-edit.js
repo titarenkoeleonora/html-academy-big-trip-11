@@ -13,7 +13,7 @@ const DefaultData = {
   saveButtonText: `Save`,
 };
 
-const isOfferChecked = (offer, checkedOffers) => {
+const getCheckedOffers = (offer, checkedOffers) => {
   return checkedOffers.some((checkedOffer) =>
     checkedOffer.title === offer.title);
 };
@@ -40,7 +40,7 @@ const createPhotosMarkup = (photos) => photos.map((photo) => {
 }).join(`\n`);
 
 const createOfferMarkup = (offersByType, checkedOffers) => offersByType.map((offer, index) => {
-  const isChecked = isOfferChecked(offer, checkedOffers);
+  const isChecked = getCheckedOffers(offer, checkedOffers);
 
   return (
     `<div class="event__offer-selector">
@@ -163,7 +163,7 @@ const createEventEditTemplate = (tripPoint, mode, options = {}) => {
           <span class="visually-hidden">Price</span>
           &euro;
         </label>
-        <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${basePrice}">
+        <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" value="${basePrice}">
       </div>
 
       <button class="event__save-btn  btn  btn--blue" type="submit">${saveButtonText}</button>
@@ -281,8 +281,10 @@ export default class EventEditComponent extends AbstractSmartComponent {
   }
 
   _destroyFlatpickr() {
-    this._flatpickr.destroy();
-    this._flatpickr = null;
+    if (this._flatpickr) {
+      this._flatpickr.destroy();
+      this._flatpickr = null;
+    }
   }
 
   _applyFlatpickr() {

@@ -1,6 +1,6 @@
 import AbstractComponent from "./abstract-component";
 
-export const MenuItem = {
+const MenuItem = {
   TABLE: `table`,
   STATISTICS: `statistics`,
 };
@@ -36,9 +36,9 @@ export default class SiteMenuComponent extends AbstractComponent {
   }
 
   _removeActiveClass() {
-    const items = document.querySelectorAll(`.trip-tabs__btn`);
+    const menuItems = document.querySelectorAll(`.trip-tabs__btn`);
 
-    items.forEach((item) => item.classList.remove(`trip-tabs__btn--active`));
+    menuItems.forEach((menuItem) => menuItem.classList.remove(`trip-tabs__btn--active`));
   }
 
   menuItemClickHandler(handler) {
@@ -60,3 +60,5 @@ export default class SiteMenuComponent extends AbstractComponent {
     document.querySelector(`#statistics`).addEventListener(`click`, this._menuItemClickHandler(handler));
   }
 }
+
+export {MenuItem};

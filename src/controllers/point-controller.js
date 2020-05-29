@@ -6,7 +6,7 @@ import PointModel from "../models/point-model";
 
 const SHAKE_ANIMATION_TIMEOUT = 600;
 
-export const EmptyPoint = {
+const EmptyPoint = {
   id: ``,
   type: `taxi`,
   dateFrom: new Date(),
@@ -36,7 +36,7 @@ export default class PointController {
 
     this._ecsKeyDownClickHandler = this._ecsKeyDownClickHandler.bind(this);
     this._submitButtonClickHandler = this._submitButtonClickHandler.bind(this);
-    this._deleteClickHandler = this._deleteClickHandler.bind(this);
+    this._deleteButtonClickHandler = this._deleteButtonClickHandler.bind(this);
     this._buttonClickHandler = this._buttonClickHandler.bind(this);
     this._favoritesButtonClickHandler = this._favoritesButtonClickHandler.bind(this);
     this._rollupButtonClickHandler = this._rollupButtonClickHandler.bind(this);
@@ -53,7 +53,7 @@ export default class PointController {
 
     this._routePointComponent.setClickHandler(this._rollupButtonClickHandler);
     this._eventEditComponent.setSaveButtonHandler(this._submitButtonClickHandler);
-    this._eventEditComponent.setResetButtonHandler(this._deleteClickHandler);
+    this._eventEditComponent.setResetButtonHandler(this._deleteButtonClickHandler);
     this._eventEditComponent.setClickHandler(this._buttonClickHandler);
 
     if (this._mode !== Mode.ADDING) {
@@ -135,7 +135,7 @@ export default class PointController {
     }
   }
 
-  _deleteClickHandler(evt) {
+  _deleteButtonClickHandler(evt) {
     evt.preventDefault();
 
     this._eventEditComponent.setData({
@@ -161,11 +161,11 @@ export default class PointController {
     const updatedPoint = Object.assign({}, this._point, {
       isFavorite: !this._point.isFavorite
     });
-    const data = this._parseData(updatedPoint);
+    const pointData = this._parseData(updatedPoint);
 
     const favoriteChecked = true;
 
-    this._dataChangeHandler(this, this._point, data, favoriteChecked);
+    this._dataChangeHandler(this, this._point, pointData, favoriteChecked);
   }
 
   _ecsKeyDownClickHandler(evt) {
@@ -196,8 +196,10 @@ export default class PointController {
 
   _parseData(formData) {
     const pointModel = new PointModel(formData);
-    const data = pointModel.toRAW(formData);
+    const pointData = pointModel.toRAW(formData);
 
-    return data;
+    return pointData;
   }
 }
+
+export {EmptyPoint};

@@ -1,35 +1,35 @@
 import moment from 'moment';
 
 export default class PointModel {
-  constructor(data) {
-    this.id = data[`id`];
-    this.type = data[`type`];
-    this.dateFrom = data[`date_from`] ? new Date(data[`date_from`]) : null;
-    this.dateTo = data[`date_to`] ? new Date(data[`date_to`]) : null;
-    this.destination = data[`destination`];
-    this.basePrice = data[`base_price`];
-    this.isFavorite = Boolean(data[`is_favorite`]);
-    this.checkedOffers = data[`offers`] || [];
+  constructor(point) {
+    this.id = point[`id`];
+    this.type = point[`type`];
+    this.dateFrom = point[`date_from`] ? new Date(point[`date_from`]) : null;
+    this.dateTo = point[`date_to`] ? new Date(point[`date_to`]) : null;
+    this.destination = point[`destination`];
+    this.basePrice = point[`base_price`];
+    this.isFavorite = Boolean(point[`is_favorite`]);
+    this.checkedOffers = point[`offers`] || [];
   }
 
-  toRAW(data) {
+  toRAW(point) {
     return {
-      'id': data.id,
-      'type': data.type,
-      'date_from': moment.parseZone(data.dateFrom).utc().format(),
-      'date_to': moment.parseZone(data.dateTo).utc().format(),
-      'destination': data.destination,
-      'offers': data.checkedOffers,
-      'base_price': data.basePrice,
-      'is_favorite': data.isFavorite,
+      'id': point.id,
+      'type': point.type,
+      'date_from': moment.parseZone(point.dateFrom).utc().format(),
+      'date_to': moment.parseZone(point.dateTo).utc().format(),
+      'destination': point.destination,
+      'offers': point.checkedOffers,
+      'base_price': point.basePrice,
+      'is_favorite': point.isFavorite,
     };
   }
 
-  static parsePoint(data) {
-    return new PointModel(data);
+  static parsePoint(point) {
+    return new PointModel(point);
   }
 
-  static parsePoints(data) {
-    return data.map(PointModel.parsePoint);
+  static parsePoints(points) {
+    return points.map(PointModel.parsePoint);
   }
 }
