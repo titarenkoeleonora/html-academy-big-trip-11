@@ -9,15 +9,8 @@ import {encode} from "he";
 import moment from 'moment';
 
 const isOfferChecked = (offer, checkedOffers) => {
-  let isChecked = false;
-
-  checkedOffers.forEach((checkedOffer) => {
-    if (offer.title === checkedOffer.title) {
-      isChecked = true;
-    }
-  });
-
-  return isChecked;
+  return checkedOffers.some((checkedOffer) =>
+    checkedOffer.title === offer.title);
 };
 
 const createOptionsMarkup = (cities) => cities.map((city) => {

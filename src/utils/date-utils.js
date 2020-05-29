@@ -16,17 +16,7 @@ export const getEndDate = (date) => {
   return targetDate;
 };
 const createNullInDate = (value) => {
-  let string = ``;
-
-  if (value < 10) {
-    string = `0` + value;
-  }
-
-  if (value >= 10) {
-    string = value;
-  }
-
-  return string;
+  return value < 10 ? `0${value}` : value;
 };
 
 export const getTimeDifference = (start, end) => {
