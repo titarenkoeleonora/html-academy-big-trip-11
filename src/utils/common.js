@@ -12,3 +12,11 @@ export const getRandomArrayItem = (array) => {
 export const isFuture = (point) => point.dateFrom > Date.now();
 
 export const isPast = (point) => point.dateFrom < Date.now();
+
+export const getCapitalizedString = (string) => {
+  if (!string) {
+    return string;
+  }
+
+  return string[0].toUpperCase() + string.slice(1);
+};

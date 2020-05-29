@@ -4,6 +4,7 @@ import {getPointsByFilter} from "../utils/filter";
 export default class PointsModel {
   constructor() {
     this._points = [];
+
     this._activeFilterType = FilterType.EVERYTHING;
 
     this._dataChangeHandler = [];
@@ -18,6 +19,14 @@ export default class PointsModel {
     return this._points;
   }
 
+  getDestinations() {
+    return this._destinations;
+  }
+
+  getOffers() {
+    return this._offers;
+  }
+
   setPoints(points) {
     this._points = points;
     this._callHandlers(this._dataChangeHandler);
@@ -26,6 +35,14 @@ export default class PointsModel {
   setFilter(filterType) {
     this._activeFilterType = filterType;
     this._callHandlers(this._filterChangeHandlers);
+  }
+
+  setDestinations(destinations) {
+    this._destinations = destinations;
+  }
+
+  setOffers(offers) {
+    this._offers = offers;
   }
 
   removePoint(id) {
