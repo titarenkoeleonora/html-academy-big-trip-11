@@ -36,6 +36,7 @@ export default class PointController {
 
     this._ecsKeyDownClickHandler = this._ecsKeyDownClickHandler.bind(this);
     this._submitButtonClickHandler = this._submitButtonClickHandler.bind(this);
+    this._deleteClickHandler = this._deleteClickHandler.bind(this);
     this._buttonClickHandler = this._buttonClickHandler.bind(this);
     this._favoritesButtonClickHandler = this._favoritesButtonClickHandler.bind(this);
     this._rollupButtonClickHandler = this._rollupButtonClickHandler.bind(this);
@@ -52,7 +53,7 @@ export default class PointController {
 
     this._routePointComponent.setClickHandler(this._rollupButtonClickHandler);
     this._eventEditComponent.setSaveButtonHandler(this._submitButtonClickHandler);
-    this._eventEditComponent.setResetButtonHandler(this._buttonClickHandler);
+    this._eventEditComponent.setResetButtonHandler(this._deleteClickHandler);
     this._eventEditComponent.setClickHandler(this._buttonClickHandler);
 
     if (this._mode !== Mode.ADDING) {
@@ -120,6 +121,10 @@ export default class PointController {
     const formData = this._eventEditComponent.getData();
     const data = this._parseData(formData);
 
+    this._eventEditComponent.setData({
+      saveButtonText: `Saving...`,
+    });
+
     this._dataChangeHandler(this, this._point, data);
     document.removeEventListener(`keydown`, this._ecsKeyDownClickHandler);
 
@@ -128,6 +133,17 @@ export default class PointController {
     } else {
       this.destroy();
     }
+  }
+
+  _deleteClickHandler(evt) {
+    evt.preventDefault();
+
+    this._eventEditComponent.setData({
+      deleteButtonText: `Deleting...`,
+    });
+
+    this._replaceEditFormToPoint();
+    document.removeEventListener(`keydown`, this._ecsKeyDownClickHandler);
   }
 
   _buttonClickHandler(evt) {
@@ -170,6 +186,11 @@ export default class PointController {
     setTimeout(() => {
       this._eventEditComponent.getElement().style.animation = ``;
       this._routePointComponent.getElement().style.animation = ``;
+
+      this._eventEditComponent.setData({
+        saveButtonText: `Save`,
+        deleteButtonText: `Delete`,
+      });
     }, SHAKE_ANIMATION_TIMEOUT);
   }
 

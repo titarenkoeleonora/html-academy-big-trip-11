@@ -8,6 +8,11 @@ import {getCapitalizedString} from "../utils/common";
 import {encode} from "he";
 import moment from 'moment';
 
+const DefaultData = {
+  deleteButtonText: `Delete`,
+  saveButtonText: `Save`,
+};
+
 const isOfferChecked = (offer, checkedOffers) => {
   return checkedOffers.some((checkedOffer) =>
     checkedOffer.title === offer.title);
@@ -92,9 +97,12 @@ const createEdidtngMarkup = (isFavorite, offersMarkup, destination, photosMarkup
 
 const createEventEditTemplate = (tripPoint, mode, options = {}) => {
   const {dateFrom, dateTo, basePrice, isFavorite} = tripPoint;
-  const {type, offersByType, checkedOffers, destination, allDestinations} = options;
+  const {type, offersByType, checkedOffers, destination, allDestinations, externalData} = options;
   const tripPointTypesTo = (Object.keys(typeRoutePointMap).slice(TypeRoutePointIndex.MIN_ACTIONS_INDEX, TypeRoutePointIndex.MAX_ACTIONS_INDEX));
   const tripPointTypesIn = (Object.keys(typeRoutePointMap).slice(TypeRoutePointIndex.MAX_ACTIONS_INDEX, TypeRoutePointIndex.MAX_ACTIVITY_INDEX));
+
+  const deleteButtonText = externalData.deleteButtonText;
+  const saveButtonText = externalData.saveButtonText;
 
   const typeTransferMarkup = createTypeMarkup(tripPointTypesTo);
   const typeActivityMarkup = createTypeMarkup(tripPointTypesIn);
@@ -102,7 +110,7 @@ const createEventEditTemplate = (tripPoint, mode, options = {}) => {
   const offersMarkup = offersByType && mode !== Mode.ADDING ? createOfferMarkup(offersByType, checkedOffers) : ``;
   const optionMarkup = createOptionsMarkup(allDestinations);
 
-  const resetButtonMode = (mode === Mode.ADDING ? `Cancel` : `Delete`);
+  const resetButtonMode = (mode === Mode.ADDING ? `Cancel` : `${deleteButtonText}`);
   const edidtngMarkup = (mode === Mode.ADDING ? `` : createEdidtngMarkup(isFavorite, offersMarkup, destination, photosMarkup));
 
   return (
@@ -158,7 +166,7 @@ const createEventEditTemplate = (tripPoint, mode, options = {}) => {
         <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${basePrice}">
       </div>
 
-      <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
+      <button class="event__save-btn  btn  btn--blue" type="submit">${saveButtonText}</button>
       <button class="event__reset-btn" type="reset">${resetButtonMode}</button>
 
       ${edidtngMarkup}`
@@ -178,7 +186,8 @@ export default class EventEditComponent extends AbstractSmartComponent {
     this._allOffers = offers;
     this._allDestinations = destinations;
     this._offers = [...document.querySelectorAll(`.event__offer-checkbox`)];
-    this._offersByType = this._getOffersByType(this._allOffers, this._eventEdit.type);
+
+    this._externalData = DefaultData;
 
     this._applyFlatpickr();
     this._subscribeOnEvents();
@@ -192,14 +201,12 @@ export default class EventEditComponent extends AbstractSmartComponent {
       checkedOffers: this._eventEdit.checkedOffers,
       destination: this._eventEdit.destination,
       allDestinations: this._allDestinations,
+      externalData: this._externalData,
     });
   }
 
   removeElement() {
-    if (this._flatpickr) {
-      this._flatpickr.destroy();
-      this._flatpickr = null;
-    }
+    this._destroyFlatpickr();
 
     super.removeElement();
   }
@@ -240,6 +247,11 @@ export default class EventEditComponent extends AbstractSmartComponent {
     };
 
     return this._eventEdit;
+  }
+
+  setData(data) {
+    this._externalData = Object.assign({}, DefaultData, data);
+    this.rerender();
   }
 
   setSaveButtonHandler(handler) {
