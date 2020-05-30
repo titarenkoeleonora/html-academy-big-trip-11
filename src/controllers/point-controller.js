@@ -155,6 +155,8 @@ export default class PointController {
 
   _buttonClickHandler(evt) {
     evt.preventDefault();
+    this._eventEditComponent.resetFormData();
+    this._eventEditComponent.rerender();
     this._replaceEditFormToPoint();
     document.removeEventListener(`keydown`, this._ecsKeyDownClickHandler);
   }
@@ -169,7 +171,6 @@ export default class PointController {
       isFavorite: !this._point.isFavorite
     });
     const pointData = this._parseData(updatedPoint);
-
     const favoriteChecked = true;
 
     this._dataChangeHandler(this, this._point, pointData, favoriteChecked);

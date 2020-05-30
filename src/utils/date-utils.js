@@ -20,7 +20,7 @@ const getTimeDifference = (start, end) => {
   return `${day} ${hours} ${minutes}`;
 };
 
-const formatTime = (date) => moment(date).format(`hh:mm`);
+const formatTime = (date) => moment(date).format(`HH:mm`);
 
 const formatDate = (date) => moment(date).format(`DD/MM/YY`);
 
@@ -35,4 +35,9 @@ const getUniqueDates = (array) => {
   return Array.from(new Set(array));
 };
 
-export {getTimeDifference, formatTime, formatDate, getAllDates, getUniqueDates};
+const formatDateToDefault = (date) => {
+  moment.defaultFormat = `DD.MM.YYYY HH:mm`;
+  return moment(date, moment.defaultFormat).toDate();
+};
+
+export {getTimeDifference, formatTime, formatDate, getAllDates, getUniqueDates, formatDateToDefault};

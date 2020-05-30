@@ -85,6 +85,11 @@ export default class TripController {
     const offers = this._pointsModel.getOffers();
 
     this._creatingPoint = new PointController(this._daysComponent.getElement(), this._dataChangeHandler, this._viewChangeHandler, destinations, offers);
+
+    if (EmptyPoint.destination.name) {
+      EmptyPoint.destination.name = ``;
+    }
+
     this._creatingPoint.render(EmptyPoint, Mode.ADDING);
 
     this._pointControllers = this._pointControllers.concat(this._creatingPoint);
@@ -146,10 +151,8 @@ export default class TripController {
   _updatePoints() {
     this._datesArray = [];
     const daysComponent = this._daysComponent.getElement();
-    const dayComponent = this._dayComponent.getElement();
 
     daysComponent.innerHTML = ``;
-    dayComponent.innerHTML = ``;
 
     this._removePoints();
     this._renderTripDays(this._pointsModel.getPoints());
@@ -189,11 +192,8 @@ export default class TripController {
       this._api.updatePoint(oldData.id, newData)
         .then((pointModel) => {
           const isSuccess = this._pointsModel.updatePoint(oldData.id, pointModel);
-
           if (isSuccess) {
-            if (favoriteChecked) {
-              pointController.render(pointModel, Mode.EDIT);
-            } else {
+            if (!favoriteChecked) {
               pointController.render(pointModel, Mode.DEFAULT);
               this._updatePoints();
             }

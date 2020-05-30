@@ -7,7 +7,7 @@ import {RenderPosition} from "./constants.js";
 import {render} from "./utils/render.js";
 import API from "./api.js";
 
-const AUTHORIZATION = `Basic dscsknd02ur943jskdv`;
+const AUTHORIZATION = `Basic dscsknd02ksdjdr943jskdv`;
 
 const api = new API(AUTHORIZATION);
 
@@ -50,19 +50,10 @@ siteMenuComponent.statisticChangeHandler(() => {
   statisticsComponent.show();
 });
 
-api.getOffers()
-.then((offers) => {
+api.getData().then(({events, destinations, offers}) => {
   pointsModel.setOffers(offers);
-});
-
-api.getDestinations()
-.then((destinations) => {
   pointsModel.setDestinations(destinations);
-});
-
-api.getPoints()
-.then((points) => {
-  pointsModel.setPoints(points);
+  pointsModel.setPoints(events);
   tripController.render();
 });
 

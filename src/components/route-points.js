@@ -50,7 +50,7 @@ const createRoutePointsTemplate = (tripPoint, mode) => {
   );
 };
 
-export default class RoutePointsComponent extends AbstractComponent {
+export default class RoutePoints extends AbstractComponent {
   constructor(point, mode) {
     super();
 

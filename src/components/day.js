@@ -19,7 +19,7 @@ const createDayTemplate = (date, index) => {
   );
 };
 
-export default class DayComponent extends AbstractComponent {
+export default class Day extends AbstractComponent {
   constructor(day, index) {
     super();
 

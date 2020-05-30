@@ -14,7 +14,7 @@ const createSiteMenuTemplate = () => {
   );
 };
 
-export default class SiteMenuComponent extends AbstractComponent {
+export default class SiteMenu extends AbstractComponent {
   constructor() {
     super();
 
