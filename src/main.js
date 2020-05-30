@@ -33,7 +33,7 @@ statisticsComponent.hide();
 
 newEventButtonElement.addEventListener(`click`, (evt) => {
   evt.preventDefault();
-  newEventButtonElement.disabled = `disabled`;
+  newEventButtonElement.disabled = true;
   filterController.setDefaultView();
   tripController.createPoint();
 });

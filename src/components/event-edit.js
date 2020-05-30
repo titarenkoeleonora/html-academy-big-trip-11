@@ -115,13 +115,13 @@ const createEventEditTemplate = (tripPoint, mode, options = {}) => {
   const typeTransferMarkup = createTypeMarkup(tripPointTypesTo);
   const typeActivityMarkup = createTypeMarkup(tripPointTypesIn);
   const photosMarkup = destination.pictures ? createPhotosMarkup(destination.pictures) : ``;
-  const offersMarkup = mode !== Mode.ADDING ? createOfferMarkup(offersByType, checkedOffers) : ``;
+  const offersMarkup = createOfferMarkup(offersByType, checkedOffers);
   const optionMarkup = createOptionsMarkup(allDestinations);
   const favoriteMarkup = mode !== Mode.ADDING ? createFavoriteMarkup(isFavorite) : ``;
 
   const resetButtonMode = (mode === Mode.ADDING ? `Cancel` : `${deleteButtonText}`);
 
-  const offersContainer = mode === Mode.ADDING ? `` : createOffersContainer(offersMarkup);
+  const offersContainer = createOffersContainer(offersMarkup);
   const eventDetailsMarkup = destination.name === `` ? `` : createEventDetailsMarkup(offersContainer, destination, photosMarkup);
 
   return (
@@ -207,7 +207,7 @@ export default class EventEditComponent extends AbstractSmartComponent {
 
     this._offers = [...document.querySelectorAll(`.event__offer-checkbox`)];
     this._allOffers = offers;
-    this._offersByType = [];
+    this._offersByType = this._getOffersByType(this._allOffers, `taxi`);
 
     this._externalData = DefaultData;
 
@@ -400,7 +400,6 @@ export default class EventEditComponent extends AbstractSmartComponent {
 
     priceElement.addEventListener(`input`, () => {
       this._pointPrice = priceElement.value;
-      this.rerender();
     });
 
     if (offersCheckbox) {
