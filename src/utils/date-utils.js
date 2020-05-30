@@ -1,8 +1,10 @@
 import {Time} from "../constants";
 import moment from "moment";
 
+const MIN_NUMBER_WITHOUT_NULL = 10;
+
 const createNullInDate = (value) => {
-  return value < 10 ? `0${value}` : value;
+  return value < MIN_NUMBER_WITHOUT_NULL ? `0${value}` : value;
 };
 
 const getTimeDifference = (start, end) => {

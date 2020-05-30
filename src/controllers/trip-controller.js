@@ -7,6 +7,7 @@ import SortComponent, {SortType} from "../components/sort";
 import DayComponent from "../components/day";
 import EventsListComponent from "../components/events-list";
 import PointController, {EmptyPoint} from "./point-controller";
+import {newEventButtonElement} from "../main";
 
 const getSortedPoints = (points, sortType) => {
   let sortedPoints = [];
@@ -166,6 +167,7 @@ export default class TripController {
             this._pointsModel.addPoint(pointModel);
             pointController.render(pointModel, Mode.DEFAULT);
             this._updatePoints();
+            newEventButtonElement.disables = false;
           })
           .catch(() => {
             pointController._replacePointToEditForm();

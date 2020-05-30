@@ -34,6 +34,8 @@ export default class PointController {
     this._routePointComponent = null;
     this._eventEditComponent = null;
 
+    this._newEventButtonElement = document.querySelector(`.trip-main__event-add-btn`);
+
     this._ecsKeyDownClickHandler = this._ecsKeyDownClickHandler.bind(this);
     this._submitButtonClickHandler = this._submitButtonClickHandler.bind(this);
     this._deleteButtonClickHandler = this._deleteButtonClickHandler.bind(this);
@@ -137,7 +139,11 @@ export default class PointController {
 
   _deleteButtonClickHandler(evt) {
     evt.preventDefault();
+    this._newEventButtonElement.removeAttribute(`disabled`);
 
+    if (this._mode === Mode.ADDING) {
+      this._eventEditComponent.resetFormData();
+    }
     this._eventEditComponent.setData({
       deleteButtonText: `Deleting...`,
     });
