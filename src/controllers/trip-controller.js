@@ -159,6 +159,7 @@ export default class TripController {
     if (oldData === EmptyPoint) {
       this._creatingPoint = null;
       if (newData === null) {
+        newEventButtonElement.removeAttribute(`disabled`);
         pointController.destroy();
         this._updatePoints();
       } else {
@@ -167,7 +168,7 @@ export default class TripController {
             this._pointsModel.addPoint(pointModel);
             pointController.render(pointModel, Mode.DEFAULT);
             this._updatePoints();
-            newEventButtonElement.disables = false;
+            newEventButtonElement.removeAttribute(`disabled`);
           })
           .catch(() => {
             pointController._replacePointToEditForm();
@@ -179,6 +180,7 @@ export default class TripController {
         .then(() => {
           this._pointsModel.removePoint(oldData.id);
           this._updatePoints();
+          newEventButtonElement.removeAttribute(`disabled`);
         })
         .catch(() => {
           pointController.shake();

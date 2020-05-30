@@ -207,7 +207,7 @@ export default class EventEditComponent extends AbstractSmartComponent {
 
     this._offers = [...document.querySelectorAll(`.event__offer-checkbox`)];
     this._allOffers = offers;
-    this._offersByType = this._getOffersByType(this._allOffers, `taxi`);
+    this._offersByType = [];
 
     this._externalData = DefaultData;
 
@@ -215,6 +215,8 @@ export default class EventEditComponent extends AbstractSmartComponent {
   }
 
   getTemplate() {
+    this._offersByType = this._getOffersByType(this._allOffers, this._pointType);
+
     return createEventEditTemplate(this._eventEdit, this._mode, {
       type: this._pointType,
       offersByType: this._offersByType,

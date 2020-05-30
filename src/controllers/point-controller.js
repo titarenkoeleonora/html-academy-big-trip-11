@@ -19,6 +19,7 @@ const EmptyPoint = {
   basePrice: 0,
   isFavorite: false,
   offers: [],
+  checkedOffers: [],
 };
 
 export default class PointController {
