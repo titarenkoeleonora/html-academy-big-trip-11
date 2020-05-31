@@ -121,7 +121,7 @@ export default class TripController {
       render(this._daysComponent.getElement(), tripDayComponent);
       render(tripDayComponent.getElement(), eventsListElement);
 
-      let tripDayEventsList = tripDayComponent.getElement().querySelector(`.trip-events__list`);
+      const tripDayEventsList = tripDayComponent.getElement().querySelector(`.trip-events__list`);
       dayDate = tripDayComponent.getElement().querySelector(`.day__date`);
       dateTime = new Date(dayDate.dateTime);
 
