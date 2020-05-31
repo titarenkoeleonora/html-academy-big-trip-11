@@ -1,4 +1,4 @@
-import {render} from "../utils/render";
+import {render, remove} from "../utils/render";
 import {RenderPosition, Mode} from "../constants";
 import DaysComponent from "../components/trip-days";
 import {getAllDates, getUniqueDates} from "../utils/date-utils";
@@ -70,9 +70,12 @@ export default class TripController {
 
     if (points.length === 0) {
       render(this._container, this._noPointsComponent);
+      this._sortComponent.hide();
       return;
     }
 
+    remove(this._noPointsComponent);
+    this._sortComponent.show();
     this._renderTripDays(points);
   }
 
@@ -155,7 +158,7 @@ export default class TripController {
     daysComponent.innerHTML = ``;
 
     this._removePoints();
-    this._renderTripDays(this._pointsModel.getPoints());
+    this.render();
   }
 
   _dataChangeHandler(pointController, oldData, newData, favoriteChecked = false) {
