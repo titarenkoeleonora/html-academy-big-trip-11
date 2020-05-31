@@ -1,22 +1,24 @@
-export const getRandomInteger = (max, min = 0) => {
+const getRandomInteger = (max, min = 0) => {
   let rand = min + Math.random() * (max + 1 - min);
   return Math.floor(rand);
 };
 
-export const getRandomArrayItem = (array) => {
+const getRandomArrayItem = (array) => {
   const randomIndex = getRandomInteger(array.length - 1);
 
   return array[randomIndex];
 };
 
-export const isFuture = (point) => point.dateFrom > Date.now();
+const isFuture = (point) => point.dateFrom > Date.now();
 
-export const isPast = (point) => point.dateFrom < Date.now();
+const isPast = (point) => point.dateFrom < Date.now();
 
-export const getCapitalizedString = (string) => {
+const getCapitalizedString = (string) => {
   if (!string) {
     return string;
   }
 
   return string[0].toUpperCase() + string.slice(1);
 };
+
+export {getRandomInteger, getRandomArrayItem, isFuture, isPast, getCapitalizedString};

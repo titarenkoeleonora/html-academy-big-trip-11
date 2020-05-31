@@ -2,8 +2,8 @@ import AbstractComponent from "./abstract-component";
 
 const FILTER_ID_PREFIX = `filter-`;
 
-const getFilterNameById = (id) => {
-  return id.substring(FILTER_ID_PREFIX.length);
+const getFilterNameById = (filterId) => {
+  return filterId.substring(FILTER_ID_PREFIX.length);
 };
 
 const createFilterMarkup = (filter, isChecked) => {
@@ -27,7 +27,7 @@ const createFiltersTemplate = (filters) => {
   );
 };
 
-export default class FiltersComponent extends AbstractComponent {
+export default class Filters extends AbstractComponent {
   constructor(filters) {
     super();
 

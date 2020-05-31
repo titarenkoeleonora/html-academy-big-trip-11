@@ -3,23 +3,18 @@ import PointsModel from "./models/points-model.js";
 import SiteMenuComponent, {MenuItem} from "./components/site-menu.js";
 import StatisticsComponent from "./components/statistics.js";
 import TripController from "./controllers/trip-controller.js";
-// import {generateTripPoints} from "./components/mock/route-point.js";
 import {RenderPosition} from "./constants.js";
 import {render} from "./utils/render.js";
 import API from "./api.js";
 
-const AUTHORIZATION = `Basic dscsknd02ur943jskdv`;
+const AUTHORIZATION = `Basic dscsknd02ksdjdr943jskdv`;
 
 const api = new API(AUTHORIZATION);
-
-// const POINTS_COUNT = 25;
-// const tripPoint = generateTripPoints(POINTS_COUNT);
-// export const sortedTripPoints = tripPoint.sort((a, b) => a.dateFrom > b.dateFrom ? 1 : -1);
 
 const pageBodyContainer = document.querySelector(`main .page-body__container`);
 const siteMainElement = document.querySelector(`.page-main`);
 const tripEventsElement = siteMainElement.querySelector(`.trip-events`);
-export const tripMainElement = document.querySelector(`.trip-main`);
+const tripMainElement = document.querySelector(`.trip-main`);
 const newEventButtonElement = tripMainElement.querySelector(`.trip-main__event-add-btn`);
 const tripControlsElement = tripMainElement.querySelector(`.trip-controls`);
 const tripControlsTitlesElement = tripControlsElement.querySelectorAll(`h2`);
@@ -38,6 +33,7 @@ statisticsComponent.hide();
 
 newEventButtonElement.addEventListener(`click`, (evt) => {
   evt.preventDefault();
+  newEventButtonElement.disabled = true;
   filterController.setDefaultView();
   tripController.createPoint();
 });
@@ -54,18 +50,11 @@ siteMenuComponent.statisticChangeHandler(() => {
   statisticsComponent.show();
 });
 
-api.getOffers()
-.then((offers) => {
+api.getData().then(({events, destinations, offers}) => {
   pointsModel.setOffers(offers);
-});
-
-api.getDestinations()
-.then((destinations) => {
   pointsModel.setDestinations(destinations);
-});
-
-api.getPoints()
-.then((points) => {
-  pointsModel.setPoints(points);
+  pointsModel.setPoints(events);
   tripController.render();
 });
+
+export {tripMainElement, newEventButtonElement};

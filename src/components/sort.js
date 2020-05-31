@@ -1,6 +1,6 @@
 import AbstractComponent from "./abstract-component";
 
-export const SortType = {
+const SortType = {
   DEFAULT: `sort-event`,
   TIME: `sort-time`,
   PRICE: `sort-price`,
@@ -41,7 +41,7 @@ const createSortTemplate = () => {
   );
 };
 
-export default class SortComponent extends AbstractComponent {
+export default class Sort extends AbstractComponent {
   constructor() {
     super();
 
@@ -50,10 +50,6 @@ export default class SortComponent extends AbstractComponent {
 
   getTemplate() {
     return createSortTemplate();
-  }
-
-  getSortType() {
-    return this._currentSortType;
   }
 
   setSortTypeHandler(handler) {
@@ -75,3 +71,4 @@ export default class SortComponent extends AbstractComponent {
   }
 }
 
+export {SortType};

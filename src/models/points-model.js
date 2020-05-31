@@ -7,6 +7,8 @@ export default class PointsModel {
 
     this._activeFilterType = FilterType.EVERYTHING;
 
+    this._offers = [];
+    this._destinations = [];
     this._dataChangeHandler = [];
     this._filterChangeHandlers = [];
   }

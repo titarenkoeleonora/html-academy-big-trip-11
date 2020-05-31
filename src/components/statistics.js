@@ -15,7 +15,7 @@ const ChartConfiguration = {
   MIN_BAR_LENGTH: 50,
 };
 
-export const EVENT_TYPES_TO = [`taxi`, `bus`, `train`, `ship`, `transport`, `drive`, `flight`];
+const EVENT_TYPES_TO = [`taxi`, `bus`, `train`, `ship`, `transport`, `drive`, `flight`];
 
 const getUniqueItems = (item, index, array) => array.indexOf(item) === index;
 
@@ -215,3 +215,5 @@ export default class Statistics extends AbstractSmartComponent {
     }
   }
 }
+
+export {EVENT_TYPES_TO};

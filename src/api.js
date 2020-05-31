@@ -40,6 +40,21 @@ const API = class {
       .then((response) => response.json());
   }
 
+  getData() {
+    return Promise.all([
+      this.getPoints(),
+      this.getDestinations(),
+      this.getOffers(),
+    ]).then((responce) => {
+      const [events, destinations, offers] = responce;
+      return {
+        events,
+        destinations,
+        offers
+      };
+    });
+  }
+
   updatePoint(id, data) {
     return this._loadData({
       url: `https://11.ecmascript.pages.academy/big-trip/points/${id}`,

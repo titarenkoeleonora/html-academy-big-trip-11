@@ -7,6 +7,7 @@ import SortComponent, {SortType} from "../components/sort";
 import DayComponent from "../components/day";
 import EventsListComponent from "../components/events-list";
 import PointController, {EmptyPoint} from "./point-controller";
+import {newEventButtonElement} from "../main";
 
 const getSortedPoints = (points, sortType) => {
   let sortedPoints = [];
@@ -84,6 +85,11 @@ export default class TripController {
     const offers = this._pointsModel.getOffers();
 
     this._creatingPoint = new PointController(this._daysComponent.getElement(), this._dataChangeHandler, this._viewChangeHandler, destinations, offers);
+
+    if (EmptyPoint.destination.name) {
+      EmptyPoint.destination.name = ``;
+    }
+
     this._creatingPoint.render(EmptyPoint, Mode.ADDING);
 
     this._pointControllers = this._pointControllers.concat(this._creatingPoint);
@@ -145,10 +151,8 @@ export default class TripController {
   _updatePoints() {
     this._datesArray = [];
     const daysComponent = this._daysComponent.getElement();
-    const dayComponent = this._dayComponent.getElement();
 
     daysComponent.innerHTML = ``;
-    dayComponent.innerHTML = ``;
 
     this._removePoints();
     this._renderTripDays(this._pointsModel.getPoints());
@@ -158,6 +162,7 @@ export default class TripController {
     if (oldData === EmptyPoint) {
       this._creatingPoint = null;
       if (newData === null) {
+        newEventButtonElement.removeAttribute(`disabled`);
         pointController.destroy();
         this._updatePoints();
       } else {
@@ -166,6 +171,7 @@ export default class TripController {
             this._pointsModel.addPoint(pointModel);
             pointController.render(pointModel, Mode.DEFAULT);
             this._updatePoints();
+            newEventButtonElement.removeAttribute(`disabled`);
           })
           .catch(() => {
             pointController._replacePointToEditForm();
@@ -177,6 +183,7 @@ export default class TripController {
         .then(() => {
           this._pointsModel.removePoint(oldData.id);
           this._updatePoints();
+          newEventButtonElement.removeAttribute(`disabled`);
         })
         .catch(() => {
           pointController.shake();
@@ -185,11 +192,8 @@ export default class TripController {
       this._api.updatePoint(oldData.id, newData)
         .then((pointModel) => {
           const isSuccess = this._pointsModel.updatePoint(oldData.id, pointModel);
-
           if (isSuccess) {
-            if (favoriteChecked) {
-              pointController.render(pointModel, Mode.EDIT);
-            } else {
+            if (!favoriteChecked) {
               pointController.render(pointModel, Mode.DEFAULT);
               this._updatePoints();
             }
