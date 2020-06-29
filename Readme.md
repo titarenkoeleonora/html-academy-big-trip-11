@@ -14,7 +14,7 @@ _`.editorconfig`, `.gitattributes`, `.travis.yml`._
 
 #### 1. Зарегистрируйтесь на Гитхабе
 
-Если у вас ещё нет аккаунта на [github.com](https://github.com/join), скорее зарегистрируйтесь.
+Если у вас ещё нет аккаунта на [github.com](https://github.com/join), скорее зарегистрируйтесь
 
 #### 2. Создайте форк
 
