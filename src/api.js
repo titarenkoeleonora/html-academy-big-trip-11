@@ -20,7 +20,7 @@ const API = class {
 
   getPoints() {
     return this._loadData({
-      url: `https://11.ecmascript.pages.academy/big-trip/points`
+      url: `https://13.ecmascript.pages.academy/big-trip/points`
     })
       .then((response) => response.json())
       .then(PointModel.parsePoints);
@@ -28,14 +28,14 @@ const API = class {
 
   getDestinations() {
     return this._loadData({
-      url: `https://11.ecmascript.pages.academy/big-trip/destinations`
+      url: `https://13.ecmascript.pages.academy/big-trip/destinations`
     })
       .then((response) => response.json());
   }
 
   getOffers() {
     return this._loadData({
-      url: `https://11.ecmascript.pages.academy/big-trip/offers`
+      url: `https://13.ecmascript.pages.academy/big-trip/offers`
     })
       .then((response) => response.json());
   }
@@ -57,7 +57,7 @@ const API = class {
 
   updatePoint(id, data) {
     return this._loadData({
-      url: `https://11.ecmascript.pages.academy/big-trip/points/${id}`,
+      url: `https://13.ecmascript.pages.academy/big-trip/points/${id}`,
       method: `PUT`,
       body: JSON.stringify(data),
     })
@@ -68,7 +68,7 @@ const API = class {
 
   createPoint(point) {
     return this._loadData({
-      url: `https://11.ecmascript.pages.academy/big-trip/points`,
+      url: `https://13.ecmascript.pages.academy/big-trip/points`,
       method: `POST`,
       body: JSON.stringify(point),
     })
@@ -78,7 +78,7 @@ const API = class {
 
   deletePoint(id) {
     return this._loadData({
-      url: `https://11.ecmascript.pages.academy/big-trip/points/${id}`,
+      url: `https://13.ecmascript.pages.academy/big-trip/points/${id}`,
       method: `DELETE`
     });
   }
